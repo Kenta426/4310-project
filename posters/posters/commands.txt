@@ -1,0 +1,5 @@
+command debug
+'scrapy shell url'
+
+run scpider
+'scrapy crawl spider-name -o output.json'

@@ -25,12 +25,19 @@ class PosterSpider(scrapy.Spider):
         title_list = response.css('ul li .react-component').xpath('@data-film-name').extract()
         img_url = response.css('ul li .react-component').css('img').xpath('@src').extract()
         data_id = response.css('ul li .react-component').xpath('@data-film-id').extract()
+        watched = response.css('ul li .film-stats').css('.icon-watched').css('.has-icon').xpath('text()').extract()
+        watched = [float(w[:-1])*1000 if w[-1] =='k' else float(w) for w in watched]
+        liked = response.css('ul li .film-stats').css('.icon-liked').css('.has-icon').xpath('text()').extract()
+        liked = [float(w[:-1])*1000 if w[-1] =='k' else float(w) for w in liked]
+
         for i in range(len(data_id)):
             img = img_url[i].split('?k=')[0]
             yield PostersItem(
                 title = title_list[i],
                 data_id = data_id[i],
-                file_urls = [img])
+                file_urls = [img],
+                watched = watched[i],
+                liked = liked[i])
 
         home = 'https://letterboxd.com'
         next_url = home + str(response.css('.pagination').css('.paginate-nextprev').css('.next').xpath('@href').extract_first())

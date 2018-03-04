@@ -14,6 +14,8 @@ class PostersItem(scrapy.Item):
     ''' Item for the movie posters '''
     data_id = scrapy.Field()
     title = scrapy.Field()
+    watched = scrapy.Field()
+    liked = scrapy.Field()
     file_urls = scrapy.Field()
     files = scrapy.Field()
 
