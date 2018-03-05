@@ -24,6 +24,7 @@ class PosterSpider(scrapy.Spider):
         # loop over all movies listed in the page just to the page and parse information
         title_list = response.css('ul li .react-component').xpath('@data-film-name').extract()
         img_url = response.css('ul li .react-component').css('img').xpath('@src').extract()
+        img_urls = [d for d in img_url if 'empty-poster-150' not in d]
         data_id = response.css('ul li .react-component').xpath('@data-film-id').extract()
         watched = response.css('ul li .film-stats').css('.icon-watched').css('.has-icon').xpath('text()').extract()
         watched = [float(w[:-1])*1000 if w[-1] =='k' else float(w) for w in watched]
@@ -31,7 +32,7 @@ class PosterSpider(scrapy.Spider):
         liked = [float(w[:-1])*1000 if w[-1] =='k' else float(w) for w in liked]
 
         for i in range(len(data_id)):
-            img = img_url[i].split('?k=')[0]
+            img = img_urls[i].split('?k=')[0]
             yield PostersItem(
                 title = title_list[i],
                 data_id = data_id[i],

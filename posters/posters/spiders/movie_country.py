@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 import scrapy
-from posters.items import MovieData
+from posters.items import MovieCountry
 
 class PosterSpider(scrapy.Spider):
-    name = "movie-spider"
+    name = "movie-country"
     urls = []
 
     for i in range(10):
@@ -23,7 +23,7 @@ class PosterSpider(scrapy.Spider):
         home = 'https://letterboxd.com'
         movie_url = response.css('ul .listitem .react-component').xpath('@data-target-link').extract()
         for movie in movie_url:
-            data_url = home + str(movie) + 'genres/'
+            data_url = home + str(movie) + 'details/'
             yield scrapy.Request(data_url, self.parse_movie_data)
 
         # next_url = home + str(response.css('.paginate-next').xpath('@href').extract_first())
@@ -34,11 +34,11 @@ class PosterSpider(scrapy.Spider):
             yield scrapy.Request(next_url, self.parse)
 
     def parse_movie_data(self, response):
-        genre = response.xpath('//div [@class = "col-17"]')\
-        .xpath('//div [@id = "tab-genres" ]')\
-        .css('a::text').extract()
-        if len(genre) == 0:
-            genre = [unicode('None', 'unicode-escape')]
+        # genre = response.xpath('//div [@class = "col-17"]')\
+        # .xpath('//div [@id = "tab-genres" ]')\
+        # .css('a::text').extract()
+        # if len(genre) == 0:
+        #     genre = [unicode('None', 'unicode-escape')]
 
         data_id =  response.xpath('//div [@id = "film-page-wrapper"]')\
         .css('.poster-list')\
@@ -51,19 +51,17 @@ class PosterSpider(scrapy.Spider):
         if len(title) == 0:
             title = unicode('None', 'unicode-escape')
 
-        year = response.xpath('//div [@class = "col-17"]')\
-        .css('#featured-film-header').css('p .number a::text').extract_first()
-        if len(year) == 0:
-            year = unicode('None', 'unicode-escape')
+        director = response.xpath('//div [@class = "col-17"]')\
+        .css('#featured-film-header').css('[itemprop=director]').css('[itemprop=name]').css('::text').extract_first()
+        if len(director) == 0:
+            director = unicode('None', 'unicode-escape')
 
-        # imdb_id = response.xpath('//div [@class = "col-17"]').xpath('//p [@class = "text-link text-footer"]').xpath('//a [@data-track-action = "IMDb"]').xpath('@href').extract_first()
-        # if imdb_id is None:
-        #     imdb_id = unicode('None', 'unicode-escape')
-        # else:
-        #     imdb_id = imdb_id.split('title/')[1].split('/')[0]
+        country = response.xpath('//div [@class = "col-17"]').xpath('//div [@id = "tab-details" ]')\
+        .xpath('//a[contains(@href,\'country\')]').css('::text').extract_first()
+        if len(country) == 0:
+            country = unicode('None', 'unicode-escape')
 
-        yield MovieData(
-            title = title,
+        yield MovieCountry(
             data_id = data_id,
-            year = year,
-            genre = genre)
+            country = country,
+            director = director)

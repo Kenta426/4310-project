@@ -25,7 +25,16 @@ class MovieData(scrapy.Item):
     title = scrapy.Field()
     year = scrapy.Field()
     genre = scrapy.Field()
-    imdb_id = scrapy.Field()
+    # imdb_id = scrapy.Field()
+
+class MovieCountry(scrapy.Item):
+    # data about the movie itself
+    data_id = scrapy.Field()
+    country = scrapy.Field()
+    director = scrapy.Field()
+    # year = scrapy.Field()
+    # genre = scrapy.Field()
+    # imdb_id = scrapy.Field()
 
 class MovieRankByPopularity(scrapy.Item):
     # data about the movie itself
