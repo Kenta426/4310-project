@@ -57,7 +57,7 @@ class PosterSpider(scrapy.Spider):
             director = unicode('None', 'unicode-escape')
 
         country = response.xpath('//div [@class = "col-17"]').xpath('//div [@id = "tab-details" ]')\
-        .xpath('//a[contains(@href,\'country\')]').css('::text').extract_first()
+        .xpath('//a[contains(@href,\'country\')]').css('::text').extract()
         if len(country) == 0:
             country = unicode('None', 'unicode-escape')
 
