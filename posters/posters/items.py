@@ -25,6 +25,7 @@ class MovieData(scrapy.Item):
     title = scrapy.Field()
     year = scrapy.Field()
     genre = scrapy.Field()
+    rating = scrapy.Field()
     # imdb_id = scrapy.Field()
 
 class MovieCountry(scrapy.Item):

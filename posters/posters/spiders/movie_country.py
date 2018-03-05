@@ -6,8 +6,8 @@ class PosterSpider(scrapy.Spider):
     name = "movie-country"
     urls = []
 
-    for i in range(10):
-        year = 2008 + i
+    for i in range(50):
+        year = 1968 + i
         urls.append('https://letterboxd.com/films/popular/year/' + str(year) + '/size/large/')
 
     start_urls = urls
@@ -30,7 +30,7 @@ class PosterSpider(scrapy.Spider):
         next_url = home + str(response.css('.pagination').css('.paginate-nextprev').css('.next').xpath('@href').extract_first())
         # page = int(response.css('.paginate-next').xpath('@href').extract_first().split('/page/')[1].split('/')[0])
         page = int(response.css('.pagination').css('.paginate-nextprev').css('.next').xpath('@href').extract_first().split('/page/')[1].split('/')[0])
-        if page < 30:
+        if page < 50:
             yield scrapy.Request(next_url, self.parse)
 
     def parse_movie_data(self, response):

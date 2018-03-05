@@ -6,8 +6,8 @@ class PosterSpider(scrapy.Spider):
     name = "movie-spider"
     urls = []
 
-    for i in range(10):
-        year = 2008 + i
+    for i in range(50):
+        year = 1968 + i
         urls.append('https://letterboxd.com/films/popular/year/' + str(year) + '/size/large/')
 
     start_urls = urls
@@ -30,7 +30,7 @@ class PosterSpider(scrapy.Spider):
         next_url = home + str(response.css('.pagination').css('.paginate-nextprev').css('.next').xpath('@href').extract_first())
         # page = int(response.css('.paginate-next').xpath('@href').extract_first().split('/page/')[1].split('/')[0])
         page = int(response.css('.pagination').css('.paginate-nextprev').css('.next').xpath('@href').extract_first().split('/page/')[1].split('/')[0])
-        if page < 30:
+        if page < 50:
             yield scrapy.Request(next_url, self.parse)
 
     def parse_movie_data(self, response):
@@ -56,6 +56,12 @@ class PosterSpider(scrapy.Spider):
         if len(year) == 0:
             year = unicode('None', 'unicode-escape')
 
+        rating = response.xpath('//div [@class = "col-17"]')\
+        .css('.ratings-histogram-chart').css('.display-rating').css('::text').extract_first()
+
+        if len(rating) == 0:
+            rating = unicode('None', 'unicode-escape')
+
         # imdb_id = response.xpath('//div [@class = "col-17"]').xpath('//p [@class = "text-link text-footer"]').xpath('//a [@data-track-action = "IMDb"]').xpath('@href').extract_first()
         # if imdb_id is None:
         #     imdb_id = unicode('None', 'unicode-escape')
@@ -66,4 +72,5 @@ class PosterSpider(scrapy.Spider):
             title = title,
             data_id = data_id,
             year = year,
-            genre = genre)
+            genre = genre,
+            rating = rating)
