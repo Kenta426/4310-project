@@ -83,19 +83,19 @@ function stacked_bar(data, svg){
 function scatter(data, svg){
   var temp = data;
   var PADDING = 100;
-  var width = 800;
-  var height = 800;
+  var width = 1200;
+  var height = 500;
   var x = d3.scaleLinear()
   .domain(d3.extent(data, d=>d.dominant_hsl.l))
   .range([PADDING,width-PADDING]);
 
   var y = d3.scaleLinear()
-  .domain(d3.extent(data, d=>d.dominant_hsl.h))
+  .domain(d3.extent(data, d=>d.dominant_hsl.s))
   .range([height-PADDING,PADDING]);
 
   var r = d3.scaleLog()
   .domain(d3.extent(data, d=>d.watched))
-  .range([1,10]);
+  .range([1,7]);
 
 
   var color = temp.filter(function(d){
@@ -110,15 +110,32 @@ function scatter(data, svg){
     .append('circle')
     .attr('class', 'movie_plot')
     .attr('cx', d => x(d.dominant_hsl.l))
-    .attr('cy', d => y(d.dominant_hsl.h))
-    .attr('r', d => r(d.watched))
-    .attr('fill', d=>d3.hsl(d.dominant_hsl))
-    .attr('opacity', 0.8)
+    .attr('cy', d => y(d.dominant_hsl.s))
+    .attr('r', d=>r(d.watched))
+    .attr('fill', function(d){
+      if (d.show){
+        return d3.hsl(d.dominant_hsl)
+      }
+      return 'None'
+    })
+    .attr('opacity', 0.9)
+    .style('stroke', 'white')
+    .style('stroke-width', '0.5')
+    .style('stroke-opacity', function(d){
+      if (d.show){
+        return 0.5
+      }
+      return 0.1
+    })
 }
 
 function filter_genre(data, svg, genre){
   svg.selectAll(".movie_plot").remove();
-  var temp = data.filter(d => d.genre.includes(genre));
+  var temp = data.map(
+    function(d){
+      d.show = d.genre.includes(genre);
+      return d
+    });
   // console.log(temp);
   scatter(temp, svg);
 }
