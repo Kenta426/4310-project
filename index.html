@@ -14,6 +14,7 @@
   <script src = "plots.js"></script>
   <script>
     var HUEBIN = 6;
+    var ROLL = 120;
 
     function translate(x,y){return "translate(" +x+ "," +y+")";};
 
@@ -29,6 +30,12 @@
       var dominant = line.dominant_color.split(/\(|, |\)/).filter(function(d){return d.length != 0}).map(d=>Number(d));
       var dominant_hsl = d3.hsl(d3.rgb(dominant[0],dominant[1],dominant[2]));
       var url = line.file_urls.split(/\[|, |\]/);
+      var dominant_sat = d3.hsl(dominant_hsl.h,1,dominant_hsl.l);
+      var hue_loc = dominant_hsl.h-ROLL;
+      if (hue_loc < 0){
+        hue_loc += 360;
+      }
+      // dominant_sat.s = 1;
       return {
         "countries" : countries,
         "director" : line.director,
@@ -42,6 +49,8 @@
         "dominant_hsl" : dominant_hsl,
         "hue" : Math.floor(dominant_hsl.h/(360/HUEBIN)),
         "url" : url,
+        "dominant_sat" : dominant_sat,
+        "hue_loc" : hue_loc,
         "show" : true
       }
     }

@@ -84,18 +84,18 @@ function scatter(data, svg){
   var temp = data;
   var PADDING = 100;
   var width = 1200;
-  var height = 500;
+  var height = 800;
   var x = d3.scaleLinear()
   .domain(d3.extent(data, d=>d.dominant_hsl.l))
   .range([PADDING,width-PADDING]);
 
   var y = d3.scaleLinear()
-  .domain(d3.extent(data, d=>d.dominant_hsl.s))
+  .domain(d3.extent(data, d=>d.hue_loc))
   .range([height-PADDING,PADDING]);
 
   var r = d3.scaleLog()
   .domain(d3.extent(data, d=>d.watched))
-  .range([1,7]);
+  .range([1,9]);
 
 
   var color = temp.filter(function(d){
@@ -110,11 +110,11 @@ function scatter(data, svg){
     .append('circle')
     .attr('class', 'movie_plot')
     .attr('cx', d => x(d.dominant_hsl.l))
-    .attr('cy', d => y(d.dominant_hsl.s))
-    .attr('r', d=>r(d.watched))
+    .attr('cy', d => y(d.hue_loc))
+    .attr('r', 5)
     .attr('fill', function(d){
       if (d.show){
-        return d3.hsl(d.dominant_hsl)
+        return d3.hsl(d.dominant_sat)
       }
       return 'None'
     })
@@ -134,6 +134,33 @@ function filter_genre(data, svg, genre){
   var temp = data.map(
     function(d){
       d.show = d.genre.includes(genre);
+      return d
+    });
+  // console.log(temp);
+  scatter(temp, svg);
+}
+
+
+function filter_year(data, svg, year){
+  svg.selectAll(".movie_plot").remove();
+  var temp = data.map(
+    function(d){
+      d.show = (d.year === year);
+      return d
+    });
+  // console.log(temp);
+  scatter(temp, svg);
+}
+
+function filter_decade(data, svg, decade){
+  years = [];
+  for (var i = 0; i < 10; i++){
+    years.push(decade + i);
+  };
+  svg.selectAll(".movie_plot").remove();
+  var temp = data.map(
+    function(d){
+      d.show = (years.includes(d.year));
       return d
     });
   // console.log(temp);
