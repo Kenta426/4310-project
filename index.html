@@ -41,7 +41,7 @@
         "director" : line.director,
         "like" : Number(line.liked),
         "watched" : Number(line.watched),
-        "rate" : Number(line.rating),
+        "rate" :  Math.floor(Number(line.rating)),
         "year" : Number(line.year),
         "title" : line.title,
         "genre" : genre,
@@ -57,6 +57,7 @@
     var srcdata;
     var newdata;
     var svg2;
+    var svg3;
 
     d3.csv("data/movie_poster_data.csv", parse, function(error, data) {
       if (error) throw error;
@@ -84,9 +85,17 @@
       svg2 = d3.select("#window2")
       .append('svg')
       .attr('width', 1200)
-      .attr('height', 1200);
+      .attr('height', 800);
       scatter(newdata, svg2);
       // filter_genre(newdata, svg2, 'action');
+
+      svg3 = d3.select("#window2")
+      .append('svg')
+      .attr('width', 1200)
+      .attr('height', 1200);
+
+      radial_scatter(newdata, svg3);
+
 
       // var i = 0;
       // window.setInterval(function(){
