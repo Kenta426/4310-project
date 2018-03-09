@@ -73,6 +73,10 @@
         });
       }
 
+      newdata = newdata.filter(function(d){
+        return ! isNaN(d.dominant_hsl.h)
+      });
+
       svg = d3.select("#window2")
       .append('svg')
       .attr('width', 1200)
