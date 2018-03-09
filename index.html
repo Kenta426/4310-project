@@ -8,7 +8,7 @@
 <style>
   body {font-family: 'Roboto Condensed', sans-serif;}
 </style>
-<body bgcolor="#333333">
+<body bgcolor="#4B4A4A">
   <div id = 'window'></div>
   <div id = 'window2'></div>
   <script src = "plots.js"></script>
@@ -31,6 +31,7 @@
       var dominant_hsl = d3.hsl(d3.rgb(dominant[0],dominant[1],dominant[2]));
       var url = line.file_urls.split(/\[|, |\]/);
       var dominant_sat = d3.hsl(dominant_hsl.h,1,dominant_hsl.l);
+      var dominant_lit = d3.hsl(dominant_hsl.h,dominant_hsl.s,0.5);
       var hue_loc = dominant_hsl.h-ROLL;
       if (hue_loc < 0){
         hue_loc += 360;
@@ -48,16 +49,16 @@
         "dominant_color" : dominant,
         "dominant_hsl" : dominant_hsl,
         "hue" : Math.floor(dominant_hsl.h/(360/HUEBIN)),
-        "url" : url,
+        "url" : url[1],
         "dominant_sat" : dominant_sat,
+        "dominant_lit" : dominant_lit,
         "hue_loc" : hue_loc,
         "show" : true
       }
     }
     var srcdata;
     var newdata;
-    var svg2;
-    var svg3;
+    var svg;
 
     d3.csv("data/movie_poster_data.csv", parse, function(error, data) {
       if (error) throw error;
@@ -72,36 +73,13 @@
         });
       }
 
-      // console.log(newdata);
-      //
-      // var svg = d3.select("#window")
-      // .append('svg')
-      // .attr('width', 1000)
-      // .attr('height', 600);
-
-
-      // heat_timeseries(data, svg);
-
-      svg2 = d3.select("#window2")
-      .append('svg')
-      .attr('width', 1200)
-      .attr('height', 800);
-      scatter(newdata, svg2);
-      // filter_genre(newdata, svg2, 'action');
-
-      svg3 = d3.select("#window2")
+      svg = d3.select("#window2")
       .append('svg')
       .attr('width', 1200)
       .attr('height', 1200);
 
-      radial_scatter(newdata, svg3);
+      radial_scatter(newdata, svg);
 
-
-      // var i = 0;
-      // window.setInterval(function(){
-      //   scatter(data, svg2, 1968+i);
-      //   i += 1;
-      // }, 200);
 
     });
   </script>
