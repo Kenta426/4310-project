@@ -21,7 +21,7 @@ function radial_scatter(data, svg){
 
   var r = d3.scaleLog()
   .domain(d3.extent(data, d=>d.watched))
-  .range([1,7]);
+  .range([1,10]);
 
 
   // var color = temp.filter(function(d){
@@ -44,7 +44,7 @@ function radial_scatter(data, svg){
     })
     .attr('fill', function(d){
       if (d.show){
-        return d3.hsl(d.dominant_hsl)
+        return d3.hsl(d.dominant_sat)
       }
       return 'None'
     })
@@ -115,6 +115,102 @@ function filter_year_r(data, svg, year){
 
   var filtered = data.map(function(d){
     d.show = (d.year==year);
+    return d
+  });
+  // JOIN new data with old elements.
+  var newplot = svg.selectAll(".movie_plot")
+    .data(filtered);
+
+  newplot.exit().remove();
+
+  newplot
+  .transition()
+  .ease(d3.easeCubic).duration(1000)
+  .style('stroke-width', function(d){
+    if (d.show){
+      return 1
+    }
+    else{
+      return 0.1
+    }
+  })
+  .style('fill-opacity', function(d){
+    if (d.show){
+      return 0.8
+    }
+    else{
+      return 0
+    }
+  })
+  .attr('r', function(d){
+    if (d.show){
+      // this.parentNode.appendChild(this);
+      return r(d.watched)
+    }
+    else{
+      return 2;
+    }
+  });
+};
+
+function filter_yearANDgenre_r(data, svg, year, genre){
+  var PADDING = 100;
+  var width = 900;
+  var height = 900;
+  var r = d3.scaleLog()
+  .domain(d3.extent(data, d=>d.watched))
+  .range([1,25]);
+
+  var filtered = data.map(function(d){
+    d.show = (d.year==year) && (d.genre.includes(genre));
+    return d
+  });
+  // JOIN new data with old elements.
+  var newplot = svg.selectAll(".movie_plot")
+    .data(filtered);
+
+  newplot.exit().remove();
+
+  newplot
+  .transition()
+  .ease(d3.easeCubic).duration(1000)
+  .style('stroke-width', function(d){
+    if (d.show){
+      return 1
+    }
+    else{
+      return 0.1
+    }
+  })
+  .style('fill-opacity', function(d){
+    if (d.show){
+      return 0.8
+    }
+    else{
+      return 0
+    }
+  })
+  .attr('r', function(d){
+    if (d.show){
+      // this.parentNode.appendChild(this);
+      return r(d.watched)
+    }
+    else{
+      return 2;
+    }
+  });
+};
+
+function filter_hue_r(data, svg, hue){
+  var PADDING = 100;
+  var width = 900;
+  var height = 900;
+  var r = d3.scaleLog()
+  .domain(d3.extent(data, d=>d.watched))
+  .range([1,10]);
+
+  var filtered = data.map(function(d){
+    d.show = (d.hue==hue);
     return d
   });
   // JOIN new data with old elements.
