@@ -7,10 +7,12 @@
 <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400" rel="stylesheet">
 <style>
   body {font-family: 'Roboto Condensed', sans-serif;}
+  .top {z-index: 100;}
 </style>
-<body bgcolor="#4B4A4A">
+<body bgcolor="#000000">
   <div id = 'window'></div>
   <div id = 'window2'></div>
+  <script src = "tooltips.js"></script>
   <script src = "plots.js"></script>
   <script>
     var HUEBIN = 6;
@@ -71,7 +73,18 @@
         year.slice(0, 100).forEach(function(d){
           newdata.push(d);
         });
-      }
+      };
+
+      newdata.sort(
+        function(a,b){
+          if (a.year!=b.year){
+             return (a.dominant_hsl.s-b.dominant_hsl.s);
+          } else {
+             return (a.year>b.year?1:-1);
+          }
+        });
+
+      console.log(newdata);
 
       newdata = newdata.filter(function(d){
         return ! isNaN(d.dominant_hsl.h)
