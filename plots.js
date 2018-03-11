@@ -98,14 +98,14 @@ function radial_scatter(data, svg){
     labels.push(1);
   }
   // insert pie chart
-  var g = centroid.selectAll(".arc")
-    .data(pie(labels))
-  .enter().append("g")
-    .attr("class", "arc");
-  g.append("path")
-      .attr("d", arc)
-      .style("opacity", 0.9)
-      .style("fill", function(d, i){return d3.hsl(i*360/HUEBIN+180/HUEBIN,0.4,0.5)});
+  // var g = centroid.selectAll(".arc")
+  //   .data(pie(labels))
+  // .enter().append("g")
+  //   .attr("class", "arc");
+  // g.append("path")
+  //     .attr("d", arc)
+  //     .style("opacity", 0.9)
+  //     .style("fill", function(d, i){return d3.hsl(i*360/HUEBIN+180/HUEBIN,0.4,0.5)});
 
   // scale functions
   // radius by lightness
