@@ -7,40 +7,41 @@
 <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400" rel="stylesheet">
 <style>
   body {font-family: 'Roboto Condensed', sans-serif;}
-  .top {z-index: 100;}
 </style>
-<body bgcolor="#000000">
+<body bgcolor="#666666">
   <div id = 'window'></div>
   <div id = 'window2'></div>
   <script src = "tooltips.js"></script>
   <script src = "plots.js"></script>
   <script>
-    var HUEBIN = 8;
-    var ROLL = 120;
-
+    var HUEBIN = 9;
+    var ROLL = 90;
+    var HROLL = 180;
+    // favorite helper function
     function translate(x,y){return "translate(" +x+ "," +y+")";};
-
+    // parse each line
     function parse(line){
+      // get countries
       var countries = line.country.split(/\[|, |\]/).filter(function(d){return d.length != 0}).map(function(d){
         var temp = d.replace('\'','');
         return temp.replace('\'','')
       });
+      // get genres
       var genre = line.genre.split(/\[|, |\]/).filter(function(d){return d.length != 0}).map(function(d){
         var temp = d.replace('\'','');
         return temp.replace('\'','')
       });
-      var dominant = line.dominant_color.split(/\(|, |\)/).filter(function(d){return d.length != 0}).map(d=>Number(d));
+      // get d3 hel class
       var dominant_hsl = d3.hsl(d3.rgb(dominant[0],dominant[1],dominant[2]));
+      // get image url
       var url = line.file_urls.split(/\[|, |\]/);
-      var dominant_sat = d3.hsl(dominant_hsl.h,1,dominant_hsl.l);
-      var dominant_lit = d3.hsl(dominant_hsl.h,dominant_hsl.s,0.5);
+      // rotate the hue by 90
       var hue_loc = dominant_hsl.h-ROLL;
       if (hue_loc < 0){
         hue_loc += 360;
       }
-      // dominant_sat.s = 1;
       return {
-        "countries" : countries,
+        // "countries" : countries,
         "director" : line.director,
         "like" : Number(line.liked),
         "watched" : Number(line.watched),
@@ -48,12 +49,9 @@
         "year" : Number(line.year),
         "title" : line.title,
         "genre" : genre,
-        "dominant_color" : dominant,
         "dominant_hsl" : dominant_hsl,
         "hue" : Math.floor(dominant_hsl.h/(360/HUEBIN)),
         "url" : url[1],
-        "dominant_sat" : dominant_sat,
-        "dominant_lit" : dominant_lit,
         "hue_loc" : hue_loc,
         "show" : true
       }
@@ -65,8 +63,8 @@
     d3.csv("data/movie_poster_data.csv", parse, function(error, data) {
       if (error) throw error;
       srcdata = data;
-
       newdata = [];
+      // take 100 movies a year
       var OLDEST = 1968;
       for (var i = 0; i < 50; i++){
         var year = srcdata.filter(d => d.year === i+OLDEST);
@@ -74,7 +72,7 @@
           newdata.push(d);
         });
       };
-
+      // sort by year and saturation for better plotting result
       newdata.sort(
         function(a,b){
           if (a.year!=b.year){
@@ -83,19 +81,17 @@
              return (a.year>b.year?1:-1);
           }
         });
-
+      // get rid of completely black / white posters
       newdata = newdata.filter(function(d){
         return ! isNaN(d.dominant_hsl.h)
       });
-
+      // insert svg
       svg = d3.select("#window2")
       .append('svg')
-      .attr('width', 1200)
-      .attr('height', 1200);
-
+      .attr('width', 1000)
+      .attr('height', 1000);
+      // create a graph
       radial_scatter(newdata, svg);
-
-
     });
   </script>
 </body>
