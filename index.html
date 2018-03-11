@@ -32,6 +32,7 @@
         return temp.replace('\'','')
       });
       // get d3 hel class
+      var dominant = line.dominant_color.split(/\(|, |\)/).filter(function(d){return d.length != 0}).map(d=>Number(d));
       var dominant_hsl = d3.hsl(d3.rgb(dominant[0],dominant[1],dominant[2]));
       // get image url
       var url = line.file_urls.split(/\[|, |\]/);
