@@ -1,3 +1,60 @@
+var HIST_WIDTH = 150;
+
+function generate_hist(data){
+  var res = {}
+  var result = [];
+
+  for (var i = 0; i < HUEBIN; i++){
+    res[i] = 0
+  }
+  data.forEach(function(d){
+    if (d.show){
+      res[d.hue] += 1
+    }
+  });
+  for (var key in res) {
+    result.push({'hue':key, 'count':res[key]})
+  }
+  result.sort(function(a,b){
+    return a.hue - b.hue;
+  })
+  return result;
+}
+
+function color_hist(svg, data){
+  var result = [];
+  var width = 150;
+  var height = 150;
+  var result = generate_hist(data);
+
+  var y = d3.scaleBand()
+          .domain(result.map(d=>d.hue))
+          .range([0, HIST_WIDTH])
+          .padding(0.15);
+
+  var x = d3.scaleLinear()
+          .domain([0.0, d3.max(result, d=>(d.count))])
+          .range([0, HIST_WIDTH]);
+
+  var total = data.length;
+  svg.selectAll('.color_hist')
+  .data(result)
+  .enter()
+  .append('rect')
+  .attr('class', 'color_hist')
+  .attr('x', 0)
+  .attr('y', d=>y(d.hue))
+  .attr('height', y.bandwidth())
+  .attr('width', function(d){
+    return d3.select(this).attr('width');
+  })
+  .attr('fill', d=>d3.hsl(d.hue*360/HUEBIN+180/HUEBIN,0.8,0.5))
+  .transition()
+  .duration(500)
+  .attr('width', d=>x(d.count))
+}
+
+
 function radial_scatter(data, svg){
   var temp = data;
   var PADDING = 40;
@@ -5,12 +62,27 @@ function radial_scatter(data, svg){
   var height = 650;
   var centroid = svg.append('g')
   .attr('id', 'centroid')
-  .attr('transform', translate(width, height));
+  .attr('transform', translate(width-50, height));
+  var radialGradient = svg.append("defs")
+    .append("radialGradient")
+      .attr("id", "radial-gradient");
+
+  radialGradient.append("stop")
+      .attr("offset", "0%")
+      .attr("stop-color", "#000000");
+
+  radialGradient.append("stop")
+      .attr("offset", "75%")
+      .attr("stop-color", "#333333");
+
+  radialGradient.append("stop")
+      .attr("offset", "100%")
+      .attr("stop-color", "#444444");
 
   centroid.append('circle')
   .attr('r', (width-PADDING)/2)
-  .attr('stroke', 'white')
-  .attr('fill', 'None')
+  .attr('stroke', '#333333')
+  .attr('fill', 'url(#radial-gradient)')
 
   var x = d3.scaleLinear()
   .domain(d3.extent(data, d=>d.dominant_hsl.l))
@@ -49,13 +121,18 @@ function radial_scatter(data, svg){
     .style('stroke-width', '0.0')
     .style('stroke-opacity', function(d){
       return 0.0
-    })
+    });
+
+    var hist = svg.append('g')
+    .attr('id', 'hist')
+    .attr('transform', translate(1.4*width+50, 1.2*height));
+    color_hist(hist, temp);
 }
 
 function filter_genre_r(data, svg, genre){
   svg.selectAll(".poster_img")
   .transition()
-  .duration(1000)
+  .duration(500)
   .attr("opacity", 0);
   var PADDING = 100;
   var width = 900;
@@ -68,6 +145,21 @@ function filter_genre_r(data, svg, genre){
     d.show = d.genre.includes(genre);
     return d
   });
+
+
+  var result = generate_hist(filtered);
+  var hist = svg.select('#hist').selectAll(".color_hist").data(result);
+  hist.exit().remove();
+
+  var hist_x = d3.scaleLinear()
+          .domain([0.0, d3.max(result, d=>(d.count))])
+          .range([0, HIST_WIDTH]);
+
+  hist.transition()
+  .duration(500)
+  .attr('width', d=>hist_x(d.count))
+
+
   // JOIN new data with old elements.
   var newplot = svg.selectAll(".movie_plot")
     .data(filtered);
@@ -76,7 +168,7 @@ function filter_genre_r(data, svg, genre){
 
   newplot
   .transition()
-  .ease(d3.easeCubic).duration(1000)
+  .ease(d3.easeCubic).duration(500)
   .style('stroke-width', function(d){
     if (d.show){
       return 1

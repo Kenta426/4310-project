@@ -15,7 +15,7 @@
   <script src = "tooltips.js"></script>
   <script src = "plots.js"></script>
   <script>
-    var HUEBIN = 6;
+    var HUEBIN = 8;
     var ROLL = 120;
 
     function translate(x,y){return "translate(" +x+ "," +y+")";};
@@ -83,8 +83,6 @@
              return (a.year>b.year?1:-1);
           }
         });
-
-      console.log(newdata);
 
       newdata = newdata.filter(function(d){
         return ! isNaN(d.dominant_hsl.h)
