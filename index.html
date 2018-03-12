@@ -7,7 +7,7 @@
 <script src="https://d3js.org/d3-voronoi.v1.min.js"></script>
 <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
-<body bgcolor="#000000">
+<body bgcolor="#aaaaaa">
   <!-- dropdown for search or filter -->
   <div class="dropdown">
     <button class="dropbtn" onclick="filter_genre_r(newdata,svg,'comedy')">Comedy</button>
@@ -21,11 +21,13 @@
 
   <div id = 'window2'></div>
   <div id = 'window'></div>
+  <div id = 'window3'></div>
   <script src = "tooltips.js"></script>
   <script src = "plots.js"></script>
   <script src="streamgraph.js"></script>
+  <script src="heatmap.js"></script>
   <script>
-    var HUEBIN = 8;
+    var HUEBIN = 6;
     var ROLL = 90;
     var HROLL = 180;
     // favorite helper function
@@ -100,7 +102,7 @@
       // insert svg
       svg = d3.select("#window2")
       .append('svg')
-      .attr('width', 650)
+      .attr('width', 700)
       .attr('height', 650);
       // create a graph
       radial_scatter(newdata, svg);
@@ -109,9 +111,15 @@
       svgStream = d3.select("#window")
       .append('svg')
       .attr('width', 1000)
-      .attr('height', 800);
+      .attr('height', 300);
+
+      var heat = d3.select("#window3")
+      .append('svg')
+      .attr('width', 1000)
+      .attr('height', 300);
       // create a stream graph
       plot_streamgraph(newdata, svgStream);
+      plot_heatmap(newdata, heat);
     });
   </script>
 </body>
