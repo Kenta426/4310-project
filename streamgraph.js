@@ -17,7 +17,10 @@ let plot_streamgraph = function(data, svg) {
   let m = 50;
   let td = generate_streamgraph(data)
   td.forEach(function(d) {
-  	let temp = {}
+  	let temp = {};
+    for (var i = 0; i < HUEBIN; i++){
+      temp[String(i)] = 0;
+    }
   	d.values.forEach(function(v) {
   		temp[v.key] = v.value
     })
@@ -53,10 +56,10 @@ let plot_streamgraph = function(data, svg) {
     .data(layers)
     .enter().append("path")
       .attr("d", area)
-      // .attr("stroke", (d, i) => "#000000")
-      // .attr("stroke-width", (d, i) => "1px")
+      .attr("stroke", (d, i) => d3.hsl(i*360/HUEBIN+180/HUEBIN, 0.4, 0.5))
+      .attr("stroke-width", (d, i) => "1px")
       .attr("fill", (d, i) => d3.hsl(i*360/HUEBIN+180/HUEBIN, 0.4, 0.5))
-      .attr("opacity", (d, i) => 0.9)
+      .attr("fill-opacity", (d, i) => 0.8)
       .attr('transform', translate(PADDING, PADDING));
 
   // below are two helper functions to return the min and max values
