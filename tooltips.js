@@ -119,7 +119,7 @@ function implement_hover(svg, data, r){
   var voronoi = d3.voronoi()
   .x(d => Math.cos(y(d.hue_loc)*Math.PI/180)*x(d.dominant_hsl.l))
   .y(d => Math.sin(y(d.hue_loc)*Math.PI/180)*x(d.dominant_hsl.l))
-  .extent([[-WIDTH/2, -HEIGHT/2],[WIDTH/2, HEIGHT/2]]);
+  .extent([[-WIDTH/2-PADDING,-HEIGHT/2-PADDING],[WIDTH/2-PADDING, HEIGHT/2-PADDING]]);
 
   var voronoiGroup = svg.append("g")
       .attr("class", "voronoi");

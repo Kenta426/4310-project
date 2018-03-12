@@ -25,7 +25,7 @@
   <script src = "plots.js"></script>
   <script src="streamgraph.js"></script>
   <script>
-    var HUEBIN = 9;
+    var HUEBIN = 6;
     var ROLL = 90;
     var HROLL = 180;
     // favorite helper function
@@ -100,8 +100,8 @@
       // insert svg
       svg = d3.select("#window2")
       .append('svg')
-      .attr('width', 750)
-      .attr('height', 750);
+      .attr('width', 650)
+      .attr('height', 650);
       // create a graph
       radial_scatter(newdata, svg);
 

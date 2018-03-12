@@ -44,6 +44,7 @@ let plot_streamgraph = function(data, svg) {
   // let z = d3.interpolateCool; //temporarily not using our own colors
 
   let area = d3.area()
+    .curve(d3.curveMonotoneX)
     .x(function(d, i) { return x(i); })
     .y0(function(d) { return y(d[0]); })
     .y1(function(d) { return y(d[1]); });
@@ -52,8 +53,10 @@ let plot_streamgraph = function(data, svg) {
     .data(layers)
     .enter().append("path")
       .attr("d", area)
-      .attr("fill", (d, i) => "none")
-      .attr("stroke", (d, i) => d3.hsl(i*360/HUEBIN+180/HUEBIN, 0.4, 0.5))
+      // .attr("stroke", (d, i) => "#000000")
+      // .attr("stroke-width", (d, i) => "1px")
+      .attr("fill", (d, i) => d3.hsl(i*360/HUEBIN+180/HUEBIN, 0.4, 0.5))
+      .attr("opacity", (d, i) => 0.9)
       .attr('transform', translate(PADDING, PADDING));
 
   // below are two helper functions to return the min and max values
