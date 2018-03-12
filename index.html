@@ -14,6 +14,7 @@
   <div id = 'window2'></div>
   <script src = "tooltips.js"></script>
   <script src = "plots.js"></script>
+  <script src="streamgraph.js"></script>
   <script>
     var HUEBIN = 9;
     var ROLL = 90;
@@ -94,6 +95,14 @@
       .attr('height', 1000);
       // create a graph
       radial_scatter(newdata, svg);
+
+      // insert svg for stream graph
+      svgStream = d3.select("#window")
+      .append('svg')
+      .attr('width', 1000)
+      .attr('height', 1000);
+      // create a stream graph
+      plot_streamgraph(newdata, svgStream);
     });
   </script>
 </body>
