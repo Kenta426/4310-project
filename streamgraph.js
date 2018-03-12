@@ -30,8 +30,8 @@ let plot_streamgraph = function(data, svg) {
         .offset(d3.stackOffsetWiggle),
       layers = stack(new_array);
   test = layers;
-  let width = +svg.attr("width"),
-      height = +svg.attr("height");
+  let width = 600,
+      height = 300;
 
   let x = d3.scaleLinear()
     .domain([0, m - 1])
@@ -52,7 +52,8 @@ let plot_streamgraph = function(data, svg) {
     .data(layers)
     .enter().append("path")
       .attr("d", area)
-      .attr("fill", (d, i) => d3.hsl(i*360/HUEBIN+180/HUEBIN, 0.8, 0.5))
+      .attr("fill", (d, i) => "none")
+      .attr("stroke", (d, i) => d3.hsl(i*360/HUEBIN+180/HUEBIN, 0.4, 0.5))
       .attr('transform', translate(PADDING, PADDING));
 
   // below are two helper functions to return the min and max values

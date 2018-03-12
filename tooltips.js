@@ -1,5 +1,6 @@
 var TT_WIDTH = 200;
 var TT_HEIGHT = 50;
+var MAX_DIST = 30;
 
 function showTooltips(loc, data, svg){
   svg.selectAll('.tooltip').remove();
@@ -101,8 +102,12 @@ function showTooltips(loc, data, svg){
   .attr('opacity', 1);
 }
 
+function dist(a, b){
+  return Math.round(Math.sqrt(Math.pow(a[0]-b[0], 2)+Math.pow(a[1]-b[1], 2)));
+}
 
 function implement_hover(svg, data, r){
+  svg.selectAll('.voronoi').remove();
   var x = d3.scaleLinear()
   .domain(d3.extent(data, d=>d.dominant_hsl.l))
   .range([WIDTH/2-PADDING, 0]);
@@ -120,7 +125,6 @@ function implement_hover(svg, data, r){
       .attr("class", "voronoi");
 
   var filtered = data.filter(d => d.show);
-  var tooltip = d3.select("body").append("div").attr("class", "toolTip");
   voronoiGroup.selectAll("path")
     .data(voronoi.polygons(filtered))
     .enter().append("path")
@@ -130,26 +134,34 @@ function implement_hover(svg, data, r){
         if (d.data.show){
           var loc = [Math.cos(y(d.data.hue_loc)*Math.PI/180)*x(d.data.dominant_hsl.l),
           Math.sin(y(d.data.hue_loc)*Math.PI/180)*x(d.data.dominant_hsl.l)];
-          voronoiGroup.selectAll('#hover').remove();
-          voronoiGroup.append('circle')
-          .attr('id', 'hover')
-          .attr('cx', Math.cos(y(d.data.hue_loc)*Math.PI/180)*x(d.data.dominant_hsl.l))
-          .attr('cy', Math.sin(y(d.data.hue_loc)*Math.PI/180)*x(d.data.dominant_hsl.l))
-          .attr('r', r)
-          .attr('fill', d3.hsl(d.data.dominant_hsl))
-          .attr('fill-opacity', 1)
-          .attr('stroke', 'white')
-          .on('mouseover', function(){
-            d3.select(this).style("cursor", "pointer");
-            showTooltips(loc, d.data, svg);
-          })
-          .on('mouseout', function(){
-            svg.selectAll('.tooltip').remove();
-          })
-          .transition()
-          .attr('r', 2*r);
+          // if (dist(d3.mouse(this), loc) < MAX_DIST){
+            voronoiGroup.selectAll('#hover').remove();
+            voronoiGroup.append('circle')
+            .attr('id', 'hover')
+            .attr('cx', Math.cos(y(d.data.hue_loc)*Math.PI/180)*x(d.data.dominant_hsl.l))
+            .attr('cy', Math.sin(y(d.data.hue_loc)*Math.PI/180)*x(d.data.dominant_hsl.l))
+            .attr('r', r)
+            .attr('fill', d3.hsl(d.data.dominant_hsl))
+            .attr('fill-opacity', 1)
+            .attr('stroke', 'white')
+            .on('mouseover', function(){
+              d3.select(this).style("cursor", "pointer");
+              showTooltips(loc, d.data, svg);
+            })
+            .on('mouseout', function(){
+              svg.selectAll('.tooltip').remove();
+            })
+            .transition()
+            .attr('r', 1.2*r);
+          // }
+          // else{
+          //   console.log('hi')
+          //   svg.selectAll('.tooltip').remove();
+          //   voronoiGroup.selectAll('#hover').remove();
+          // }
         }
       })
       .on("mouseout", function(d){
+
       });
 }

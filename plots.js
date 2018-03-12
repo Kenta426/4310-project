@@ -98,14 +98,14 @@ function radial_scatter(data, svg){
     labels.push(1);
   }
   // insert pie chart
-  // var g = centroid.selectAll(".arc")
-  //   .data(pie(labels))
-  // .enter().append("g")
-  //   .attr("class", "arc");
-  // g.append("path")
-  //     .attr("d", arc)
-  //     .style("opacity", 0.9)
-  //     .style("fill", function(d, i){return d3.hsl(i*360/HUEBIN+180/HUEBIN,0.4,0.5)});
+  var g = centroid.selectAll(".arc")
+    .data(pie(labels))
+  .enter().append("g")
+    .attr("class", "arc");
+  g.append("path")
+      .attr("d", arc)
+      .style("opacity", 0.9)
+      .style("fill", function(d, i){return d3.hsl(i*360/HUEBIN+180/HUEBIN,0.4,0.5)});
 
   // scale functions
   // radius by lightness
@@ -143,15 +143,18 @@ function radial_scatter(data, svg){
     .attr('id', 'hist')
     .attr('transform', translate(1.4*WIDTH+50, 1.2*HEIGHT));
     // color_hist(hist, temp);
-    implement_hover(centroid, data, 5);
+    // implement_hover(centroid, data, 5);
 }
 
 // filter by genre
 function filter_genre_r(data, svg, genre){
+  svg.selectAll('#hover').remove();
+  svg.selectAll('.tooltip').remove();
+  svg.selectAll(".poster_img").remove();
   // if there is an image, make them not visible
   svg.selectAll(".poster_img")
   .transition()
-  .duration(500)
+  .duration(100)
   .attr("opacity", 0)
   .style("visibility", 'hidden');
 
@@ -190,7 +193,7 @@ function filter_genre_r(data, svg, genre){
   .attr('r', d => (d.show) ? 8 : 2);
 
   var centroid = svg.select('#centroid');
-  svg.selectAll('#hover').remove();
+
   implement_hover(centroid, filtered, 8);
 };
 

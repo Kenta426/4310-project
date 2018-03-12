@@ -11,7 +11,12 @@
   <!-- dropdown for search or filter -->
   <div class="dropdown">
     <button class="dropbtn" onclick="filter_genre_r(newdata,svg,'comedy')">Comedy</button>
-    <button class="dropbtn" onclick="filter_genre_r(newdata,svg,'thriller')">Thriller</button>
+    <button class="dropbtn" onclick="filter_genre_r(newdata,svg,'horror')">Horror</button>
+    <button class="dropbtn" onclick="filter_genre_r(newdata,svg,'romance')">Romance</button>
+    <button class="dropbtn" onclick="filter_genre_r(newdata,svg,'animation')">Animation</button>
+    <button class="dropbtn" onclick="filter_genre_r(newdata,svg,'science fiction')">Science Fiction</button>
+    <button class="dropbtn" onclick="filter_genre_r(newdata,svg,'war')">War</button>
+    <button class="dropbtn" onclick="filter_genre_r(newdata,svg,'western')">Western</button>
   </div>
 
   <div id = 'window2'></div>
@@ -104,7 +109,7 @@
       svgStream = d3.select("#window")
       .append('svg')
       .attr('width', 1000)
-      .attr('height', 400);
+      .attr('height', 800);
       // create a stream graph
       plot_streamgraph(newdata, svgStream);
     });
