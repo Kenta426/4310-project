@@ -25,7 +25,9 @@ let plot_streamgraph = function(data, svg) {
   	new_array.push(temp);
   })
 
-  let stack = d3.stack().keys(d3.range(HUEBIN)).offset(d3.stackOffsetWiggle),
+  let stack = d3.stack().keys(d3.range(HUEBIN))
+        .order(d3.stackOrderInsideOut)
+        .offset(d3.stackOffsetWiggle),
       layers = stack(new_array);
   test = layers;
   let width = +svg.attr("width"),
@@ -50,7 +52,8 @@ let plot_streamgraph = function(data, svg) {
     .data(layers)
     .enter().append("path")
       .attr("d", area)
-      .attr("fill", (d, i) => d3.hsl(i*360/HUEBIN+180/HUEBIN, 0.8, 0.5));
+      .attr("fill", (d, i) => d3.hsl(i*360/HUEBIN+180/HUEBIN, 0.8, 0.5))
+      .attr('transform', translate(PADDING, PADDING));
 
   // below are two helper functions to return the min and max values
   // courtesy of Bostock https://bl.ocks.org/mbostock/4060954
