@@ -27,7 +27,7 @@
   <script src="streamgraph.js"></script>
   <script src="heatmap.js"></script>
   <script>
-    var HUEBIN = 6;
+    var HUEBIN = 8;
     var ROLL = 90;
     var HROLL = 180;
     // favorite helper function
@@ -116,7 +116,7 @@
       var heat = d3.select("#window3")
       .append('svg')
       .attr('width', 1000)
-      .attr('height', 300);
+      .attr('height', 700);
       // create a stream graph
       plot_streamgraph(newdata, svgStream);
       plot_heatmap(newdata, heat);

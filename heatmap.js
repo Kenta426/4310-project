@@ -1,6 +1,6 @@
-var RECT_HEIGHT = 20;
+var RECT_HEIGHT = 40;
 var HEAT_WIDTH = 605;
-var PADDING_HEAT = 2;
+var PADDING_HEAT = 5;
 
 function plot_heatmap(data, svg){
   // data {'hue' : [{"year": x, "value": y},{"year": x, "value": y},{"year": x, "value": y}]}
@@ -43,11 +43,19 @@ function plot_heatmap(data, svg){
     .range([0, HEAT_WIDTH])
     .padding(0.15);
 
+
+  var max_arr = heat_data.map(function(d){return d3.max(d.data)});
+  var min_arr = heat_data.map(function(d){return d3.min(d.data)});
+
+
   var opacity_scales = d3.scaleLinear()
-    .domain([0,100])
-    .range([0, 1]);
+    .domain([d3.min(min_arr),30])
+    .range([0.1, 1]);
+
 
   heat_data.forEach(function(d, i){
+    opacity_scales.domain(d3.extent(d.data));
+    // console.log(d3.extent(d.data))
     var g = svg.append('g')
     .attr('transform', translate(33, i * (RECT_HEIGHT+PADDING_HEAT)));
     g.selectAll('.heat_cell')
