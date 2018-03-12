@@ -127,6 +127,7 @@ function radial_scatter(data, svg){
   .data(temp)
   .enter()
     .append('circle')
+    .style('pointer-events', null)
     .attr('class', 'movie_plot')
     .attr('cx', d => Math.cos(y(d.hue_loc)*Math.PI/180)*x(d.dominant_hsl.l))
     .attr('cy', d => Math.sin(y(d.hue_loc)*Math.PI/180)*x(d.dominant_hsl.l))
@@ -142,6 +143,7 @@ function radial_scatter(data, svg){
     .attr('id', 'hist')
     .attr('transform', translate(1.4*WIDTH+50, 1.2*HEIGHT));
     // color_hist(hist, temp);
+    implement_hover(centroid, data, 5);
 }
 
 // filter by genre
@@ -185,7 +187,11 @@ function filter_genre_r(data, svg, genre){
   .transition().ease(d3.easePoly).duration(500)
   .style('stroke-width', d => (d.show) ? 1 : 0.3)
   .style('fill-opacity', d => (d.show) ? 0.9 : 0.15)
-  .attr('r', d => (d.show) ? 8 : 2)
+  .attr('r', d => (d.show) ? 8 : 2);
+
+  var centroid = svg.select('#centroid');
+  svg.selectAll('#hover').remove();
+  implement_hover(centroid, filtered, 8);
 };
 
 
