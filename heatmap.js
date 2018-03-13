@@ -2,7 +2,7 @@ var RECT_HEIGHT = 40;
 var HEAT_WIDTH = 605;
 var PADDING_HEAT = 20;
 var TS_HEIGHT = 40;
-var TS_WIDTH = 350;
+var TS_WIDTH = 250;
 
 function plot_timeseries(data, svg){
   // data {'hue' : [{"year": x, "value": y},{"year": x, "value": y},{"year": x, "value": y}]}
@@ -64,11 +64,18 @@ function plot_timeseries(data, svg){
     .domain(d3.extent(d.data));
 
     var line = d3.line()
-        .curve(d3.curveMonotoneX)
+        .curve(d3.curveBasis)
         .x(function(d,i) { return year_x(Number(i))+year_x.bandwidth()/2; })
         .y(function(d) { return y(Number(d)); });
 
     var base = d3.min(d.data);
+
+    var area = d3.area()
+    .curve(d3.curveBasis)
+    .x(function(d,i) { return year_x(Number(i))+year_x.bandwidth()/2; })
+    .y1(function(d) { return y(Number(d)); })
+    .y0(function(d) { return y(Number(base)); });
+
     var zero_line = d3.line()
         .x(function(d, i) { return year_x(Number(i))+year_x.bandwidth()/2; })
         .y(function(d) { return y(Number(base)); });
@@ -79,13 +86,19 @@ function plot_timeseries(data, svg){
     // .range(["#111111",d3.hsl(i*360/HUEBIN+180/HUEBIN,0.5,0.5)]);
     // console.log(d3.extent(d.data))
     var g = svg.append('g')
-    .attr('transform', translate(650, i * (PADDING_HEAT+TS_HEIGHT)));
+    .attr('transform', translate(WIDTH+3*PADDING, (i+2) * (PADDING_HEAT+TS_HEIGHT)));
+
+    // g.append("path")
+    //   .datum(d.data)
+    //   .attr("fill", "none")
+    //   .attr("stroke", 'white')
+    //   .attr("d", zero_line);
 
     g.append("path")
-      .datum(d.data)
-      .attr("fill", "none")
-      .attr("stroke", 'white')
-      .attr("d", zero_line);
+         .datum(d.data)
+         .attr("fill", d3.hsl(i*360/HUEBIN+180/HUEBIN,0.5,0.5))
+         .attr("d", area)
+         .attr("opacity", 0.1);
 
     // thick line at y = 0
     g.append("path")
@@ -97,15 +110,15 @@ function plot_timeseries(data, svg){
       .attr("stroke", d3.hsl(i*360/HUEBIN+180/HUEBIN,0.5,0.5))
       .attr("d", line);
 
-    g.selectAll(".plot").data(d.data)
-    .enter()
-    .append("circle")
-      .attr("class", "plot")
-      .attr("cx", function(d,i) { return year_x(Number(i))+year_x.bandwidth()/2; })
-      .attr("cy", function(d) { return y(Number(d)); })
-      .attr("r", 2)
-      .attr("fill", d3.hsl(i*360/HUEBIN+180/HUEBIN,0.5,0.5))
-      .style("opacity", 1);
+    // g.selectAll(".plot").data(d.data)
+    // .enter()
+    // .append("circle")
+    //   .attr("class", "plot")
+    //   .attr("cx", function(d,i) { return year_x(Number(i))+year_x.bandwidth()/2; })
+    //   .attr("cy", function(d) { return y(Number(d)); })
+    //   .attr("r", 2)
+    //   .attr("fill", d3.hsl(i*360/HUEBIN+180/HUEBIN,0.5,0.5))
+    //   .style("opacity", 1);
   })
 }
 

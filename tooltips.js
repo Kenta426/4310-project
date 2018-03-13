@@ -1,6 +1,7 @@
 var TT_WIDTH = 200;
 var TT_HEIGHT = 50;
 var MAX_DIST = 30;
+var ACTIVE_TOOPTIPS = true;
 
 function showTooltips(loc, data, svg){
   svg.selectAll('.tooltip').remove();
@@ -125,13 +126,14 @@ function implement_hover(svg, data, r){
       .attr("class", "voronoi");
 
   var filtered = data.filter(d => d.show);
-  voronoiGroup.selectAll("path")
+  voronoiGroup.selectAll(".cell")
     .data(voronoi.polygons(filtered))
     .enter().append("path")
+      .attr('class', 'cell')
       .attr("d", function(d) { return d ? "M" + d.join("L") + "Z" : null; })
       .attr("opacity", "0")
       .on("mouseover", function(d){
-        if (d.data.show){
+        if (d.data.show && ACTIVE_TOOPTIPS){
           var loc = [Math.cos(y(d.data.hue_loc)*Math.PI/180)*x(d.data.dominant_hsl.l),
           Math.sin(y(d.data.hue_loc)*Math.PI/180)*x(d.data.dominant_hsl.l)];
           // if (dist(d3.mouse(this), loc) < MAX_DIST){

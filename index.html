@@ -102,10 +102,11 @@
       // insert svg
       svg = d3.select("#window2")
       .append('svg')
-      .attr('width', 700)
+      .attr('width', 1000)
       .attr('height', 650);
       // create a graph
       radial_scatter(newdata, svg);
+      plot_timeseries(newdata, svg);
 
       // insert svg for stream graph
       svgStream = d3.select("#window")
@@ -120,7 +121,7 @@
       // create a stream graph
       plot_streamgraph(newdata, svgStream);
       plot_heatmap(newdata, heat);
-      plot_timeseries(newdata, heat);
+
     });
   </script>
 </body>

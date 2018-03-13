@@ -2,8 +2,8 @@
 var HIST_WIDTH = 150;
 var HIST_HEIGHT = 150;
 var PADDING = 35;
-var WIDTH = 600;
-var HEIGHT = 600;
+var WIDTH = 500;
+var HEIGHT = 500;
 
 // generate histogram data
 function generate_hist(data){
@@ -68,24 +68,23 @@ function radial_scatter(data, svg){
   // 0% stop
   radialGradient.append("stop")
       .attr("offset", "0%")
-      .attr("stop-color", "#101010");
+      .attr("stop-color", "#222222");
   // 75% stop
   radialGradient.append("stop")
-      .attr("offset", "75%")
+      .attr("offset", "65%")
       .attr("stop-color", "#777777");
   // 100% stop
   radialGradient.append("stop")
       .attr("offset", "100%")
-      .attr("stop-color", "#000000");
+      .attr("stop-color", "#333333");
   // frame circle
   centroid.append('circle')
   .attr('r', (WIDTH+PADDING)/2)
   .attr('fill', 'url(#radial-gradient)');
-
   // color thick (the scaling is pretty much hard-coded)
   var arc = d3.arc()
-    .outerRadius((WIDTH-PADDING)/2+25)
-    .innerRadius((WIDTH-PADDING)/2+18)
+    .outerRadius((WIDTH-PADDING)/2+27)
+    .innerRadius((WIDTH-PADDING)/2+25)
     .padAngle(0.15)
     .cornerRadius(3);
   // pie layout
@@ -131,7 +130,7 @@ function radial_scatter(data, svg){
     .attr('class', 'movie_plot')
     .attr('cx', d => Math.cos(y(d.hue_loc)*Math.PI/180)*x(d.dominant_hsl.l))
     .attr('cy', d => Math.sin(y(d.hue_loc)*Math.PI/180)*x(d.dominant_hsl.l))
-    .attr('r', 5)
+    .attr('r', 3)
     .attr('fill', d => d.show ? d3.hsl(d.dominant_hsl) : 'None')
     .style('fill-opacity', 0.7)
     .style('stroke-opacity', function(d){
@@ -190,7 +189,7 @@ function filter_genre_r(data, svg, genre){
   .transition().ease(d3.easePoly).duration(500)
   .style('stroke-width', d => (d.show) ? 1 : 0.3)
   .style('fill-opacity', d => (d.show) ? 0.9 : 0.15)
-  .attr('r', d => (d.show) ? 8 : 2);
+  .attr('r', d => (d.show) ? 6 : 2);
 
   var centroid = svg.select('#centroid');
 
@@ -199,9 +198,9 @@ function filter_genre_r(data, svg, genre){
 
 
 function filter_year_r(data, svg, year){
-  var PADDING = 40;
-  var width = 650;
-  var height = 650;
+  // var PADDING = 40;
+  // var width = 650;
+  // var height = 650;
 
   var x = d3.scaleLinear()
   .domain(d3.extent(data, d=>d.dominant_hsl.l))
