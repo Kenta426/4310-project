@@ -49,12 +49,20 @@ function plot_heatmap(data, svg){
 
 
   var opacity_scales = d3.scaleLinear()
-    .domain([d3.min(min_arr),30])
-    .range([0.1, 1]);
+    .domain([d3.min(min_arr),d3.max(max_arr)])
+    .range([0, 1]);
+
+  var hue_scale = d3.scaleLinear()
+  // .domain([d3.min(min_arr),d3.max(max_arr)])
+  .domain([d3.min(min_arr),28])
+  // .range(["#111111",d3.hsl(i*360/HUEBIN+180/HUEBIN,0.5,0.5)]);
 
 
   heat_data.forEach(function(d, i){
-    opacity_scales.domain(d3.extent(d.data));
+    // opacity_scales.domain(d3.extent(d.data));
+    hue_scale.range(["#111111",d3.hsl(i*360/HUEBIN+180/HUEBIN,0.5,0.5)]);
+    // .domain(d3.extent(d.data))
+    // .range(["#111111",d3.hsl(i*360/HUEBIN+180/HUEBIN,0.5,0.5)]);
     // console.log(d3.extent(d.data))
     var g = svg.append('g')
     .attr('transform', translate(33, i * (RECT_HEIGHT+PADDING_HEAT)));
@@ -67,6 +75,6 @@ function plot_heatmap(data, svg){
       .attr('width', heat_x.bandwidth())
       .attr('height', RECT_HEIGHT)
       // .attr('opacity', d => opacity_scales(d))
-      .attr('fill', function(d){return d3.hsl(i*360/HUEBIN+180/HUEBIN,opacity_scales(d),0.5)});
+      .attr('fill', function(d){return hue_scale(d)});
   })
 }
