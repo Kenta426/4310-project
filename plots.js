@@ -70,7 +70,7 @@ function radial_scatter(data, svg){
   // 0% stop
   radialGradient.append("stop")
       .attr("offset", "0%")
-      .attr("stop-color", "#999999");
+      .attr("stop-color", "#777777");
   // 75% stop
   radialGradient.append("stop")
       .attr("offset", "45%")
@@ -179,7 +179,12 @@ function filter_genre_r(data, svg, genre){
 
   // change the show attribute of mathced data to true
   var filtered = data.map(function(d){
-    d.show = d.genre.includes(genre);
+    if (genre == 'all'){
+      d.show = true;
+    }
+    else{
+      d.show = d.genre.includes(genre);
+    }
     return d
   });
 
@@ -212,6 +217,7 @@ function filter_genre_r(data, svg, genre){
   var centroid = svg.select('#centroid');
 
   implement_hover(centroid, filtered, 8);
+  update_timeseries(filtered, svg);
 };
 
 

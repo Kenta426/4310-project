@@ -10,6 +10,7 @@
 <body>
   <!-- dropdown for search or filter -->
   <div class="dropdown">
+    <button class="dropbtn" onclick="filter_genre_r(newdata,svg, 'all')">All</button>
     <button class="dropbtn" onclick="filter_genre_r(newdata,svg,'comedy')">Comedy</button>
     <button class="dropbtn" onclick="filter_genre_r(newdata,svg,'horror')">Horror</button>
     <button class="dropbtn" onclick="filter_genre_r(newdata,svg,'romance')">Romance</button>
@@ -27,7 +28,7 @@
   <script src="streamgraph.js"></script>
   <script src="heatmap.js"></script>
   <script>
-    var HUEBIN = 8;
+    var HUEBIN = 7;
     var ROLL = 90;
     var HROLL = 180;
     // favorite helper function
