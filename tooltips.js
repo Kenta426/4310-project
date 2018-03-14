@@ -1,10 +1,13 @@
 var TT_WIDTH = 200;
-var TT_HEIGHT = 50;
+var TT_HEIGHT = 120;
 var MAX_DIST = 30;
 var ACTIVE_TOOPTIPS = true;
+var POSTER_WIDTH = 50;
+var TOOL_PAD = 5;
 
 function showTooltips(loc, data, svg){
   svg.selectAll('.tooltip').remove();
+
 
   // console.log(textSize(data.title))
   var text = svg.append('g')
@@ -47,14 +50,14 @@ function showTooltips(loc, data, svg){
   var text_element = text.select("#stats");
   var textWidth4 = text_element.node().getComputedTextLength();
 
-  var width = d3.max([textWidth,textWidth2,textWidth3,textWidth4]) + 25 * 2;
+  var width = d3.max([textWidth,textWidth2,textWidth3,textWidth4]) + TOOL_PAD * 2;
   text.selectAll('text').remove();
 
   text.append('rect')
   .attr('transform', translate(-width/2, -30))
   // .attr('id', 'frame')
   .attr('x', 0)
-  .attr('y', 0)
+  .attr('y', -70)
   .attr('width', width)
   .attr('height', TT_HEIGHT)
   .style('pointer-events', null)
@@ -64,7 +67,7 @@ function showTooltips(loc, data, svg){
   text.append('text')
   .attr('class', 'info')
   .text(data.title)
-  .attr('transform', translate(0, -20))
+  .attr('transform', translate(0, 0))
   .attr('text-anchor', 'middle')
   .attr('alignment-baseline', 'central')
   .attr('font-size', '8px')
@@ -73,7 +76,7 @@ function showTooltips(loc, data, svg){
 
   text.append('text')
   .attr('class', 'info')
-  .attr('transform', translate(0, -10))
+  .attr('transform', translate(0, 10))
   .text('('+ data.year + ')')
   .attr('text-anchor', 'middle')
   .attr('alignment-baseline', 'central')
@@ -81,26 +84,19 @@ function showTooltips(loc, data, svg){
   .style('pointer-events', null)
   .attr('fill', 'white');
 
-  text.append('text')
+  text.append('image')
   .attr('class', 'info')
-  .text(data.director)
-  .attr('text-anchor', 'middle')
-  .attr('alignment-baseline', 'central')
-  .attr('font-size', '6px')
+  .attr('transform', translate(-POSTER_WIDTH/2, -90))
   .style('pointer-events', null)
-  .attr('fill', 'white');
-
-
-  text.append('text')
-  .attr('class', 'info')
-  .attr('transform', translate(0, 10))
-  .text(data.watched + '  views  |  rating : '+ data.rate + '/5  ')
-  .attr('text-anchor', 'middle')
-  .attr('alignment-baseline', 'central')
-  .attr('font-size', '6px')
-  .attr('fill', 'white')
-  .style('pointer-events', null)
-  .attr('opacity', 1);
+  .attr("xlink:href", function(){
+    if (data.show){
+      return data.url.split(/\'|, |\'/)[1]
+    }
+  })
+  .attr("width", POSTER_WIDTH)
+  .attr("stroke", d3.hsl(data.dominant_hsl))
+  .attr("stroke-width", '3px')
+  .attr("opacity", 1);
 }
 
 function dist(a, b){
@@ -111,7 +107,7 @@ function implement_hover(svg, data, r){
   svg.selectAll('.voronoi').remove();
   var x = d3.scaleLinear()
   .domain(d3.extent(data, d=>d.dominant_hsl.l))
-  .range([WIDTH/2-PADDING, 0]);
+  .range([WIDTH/2-PADDING/2, 0]);
 
   var y = d3.scaleLinear()
   .domain(d3.extent(data, d=>d.hue_loc))
@@ -147,20 +143,15 @@ function implement_hover(svg, data, r){
             .attr('fill-opacity', 1)
             .attr('stroke', 'white')
             .on('mouseover', function(){
-              d3.select(this).style("cursor", "pointer");
+              // `// d3.select(this).style("cursor", "pointer");`
               showTooltips(loc, d.data, svg);
             })
             .on('mouseout', function(){
               svg.selectAll('.tooltip').remove();
+              d3.select('image').remove();
             })
             .transition()
             .attr('r', 1.2*r);
-          // }
-          // else{
-          //   console.log('hi')
-          //   svg.selectAll('.tooltip').remove();
-          //   voronoiGroup.selectAll('#hover').remove();
-          // }
         }
       })
       .on("mouseout", function(d){

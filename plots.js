@@ -2,8 +2,10 @@
 var HIST_WIDTH = 150;
 var HIST_HEIGHT = 150;
 var PADDING = 35;
-var WIDTH = 500;
-var HEIGHT = 500;
+var WIDTH = 550;
+var HEIGHT = 550;
+var INFO_BOX_HEIGHT = 200;
+var YEAR_SEARCH_HEIGHT = 30;
 
 // generate histogram data
 function generate_hist(data){
@@ -68,15 +70,16 @@ function radial_scatter(data, svg){
   // 0% stop
   radialGradient.append("stop")
       .attr("offset", "0%")
-      .attr("stop-color", "#222222");
+      .attr("stop-color", "#999999");
   // 75% stop
   radialGradient.append("stop")
-      .attr("offset", "65%")
-      .attr("stop-color", "#777777");
+      .attr("offset", "45%")
+      .attr("stop-color", "#eeeeee");
   // 100% stop
   radialGradient.append("stop")
       .attr("offset", "100%")
-      .attr("stop-color", "#333333");
+      .attr("stop-color", "#eeeeee");
+
   // frame circle
   centroid.append('circle')
   .attr('r', (WIDTH+PADDING)/2)
@@ -101,16 +104,29 @@ function radial_scatter(data, svg){
     .data(pie(labels))
   .enter().append("g")
     .attr("class", "arc");
+
   g.append("path")
       .attr("d", arc)
       .style("opacity", 0.9)
-      .style("fill", function(d, i){return d3.hsl(i*360/HUEBIN+180/HUEBIN,0.4,0.5)});
+      .style("fill", function(d, i){return d3.hsl(i*360/HUEBIN+180/HUEBIN,0.8,0.5)});
+
+  var ticks = centroid.selectAll(".ticks")
+  .data([0.2, 0.5, 0.8])
+  .enter()
+  .append('circle')
+  .attr('class', 'ticks')
+  .attr('r', d => WIDTH/2*d)
+  .attr('fill', 'none')
+  .attr('stroke', '#222222')
+  .attr('stroke-width', '1.2')
+  .attr('opacity', 0.6)
+  .attr('stroke-dasharray', '4, 5');
 
   // scale functions
   // radius by lightness
   var x = d3.scaleLinear()
   .domain(d3.extent(data, d=>d.dominant_hsl.l))
-  .range([WIDTH/2-PADDING, 0]);
+  .range([WIDTH/2-PADDING/2, 0]);
   // angle by hue
   var y = d3.scaleLinear()
   .domain(d3.extent(data, d=>d.hue_loc))
@@ -134,7 +150,7 @@ function radial_scatter(data, svg){
     .attr('fill', d => d.show ? d3.hsl(d.dominant_hsl) : 'None')
     .style('fill-opacity', 0.7)
     .style('stroke-opacity', function(d){
-      return 0.0
+      return 0.0;
     });
 
     // potentially plot histogram to show the color distribution
@@ -167,6 +183,8 @@ function filter_genre_r(data, svg, genre){
     return d
   });
 
+
+
   // animation for histogram
   var result = generate_hist(filtered);
   var hist = svg.select('#hist').selectAll(".color_hist").data(result);
@@ -189,7 +207,7 @@ function filter_genre_r(data, svg, genre){
   .transition().ease(d3.easePoly).duration(500)
   .style('stroke-width', d => (d.show) ? 1 : 0.3)
   .style('fill-opacity', d => (d.show) ? 0.9 : 0.15)
-  .attr('r', d => (d.show) ? 6 : 2);
+  .attr('r', d => (d.show) ? 4.5 : 2);
 
   var centroid = svg.select('#centroid');
 
@@ -198,93 +216,48 @@ function filter_genre_r(data, svg, genre){
 
 
 function filter_year_r(data, svg, year){
-  // var PADDING = 40;
-  // var width = 650;
-  // var height = 650;
-
-  var x = d3.scaleLinear()
-  .domain(d3.extent(data, d=>d.dominant_hsl.l))
-  .range([width/2-PADDING, 0]);
-
-  var y = d3.scaleLinear()
-  .domain(d3.extent(data, d=>d.hue_loc))
-  .range([0, 360]);
+  svg.selectAll('#hover').remove();
+  svg.selectAll('.tooltip').remove();
+  svg.selectAll(".poster_img").remove();
+  // if there is an image, make them not visible
+  svg.selectAll(".poster_img")
+  .attr("opacity", 0)
+  .style("visibility", 'hidden');
 
   var r = d3.scaleLog()
   .domain(d3.extent(data, d=>d.watched))
-  .range([1,40]);
+  .range([1,14]);
 
+  // change the show attribute of mathced data to true
   var filtered = data.map(function(d){
-    d.show = (d.year==year);
+    d.show = (d.year === year);
     return d
   });
-  // JOIN new data with old elements.
+  // animation for histogram
+  var result = generate_hist(filtered);
+  var hist = svg.select('#hist').selectAll(".color_hist").data(result);
+  hist.exit().remove();
+  var hist_x = d3.scaleLinear()
+          .domain([0.0, d3.max(result, d=>(d.count))])
+          .range([0, HIST_WIDTH]);
+  hist
+  .attr('width', d=>hist_x(d.count));
+
+
+  // insert new data
   var newplot = svg.selectAll(".movie_plot")
     .data(filtered);
-
-  svg.selectAll(".poster_img")
-  .transition()
-  .duration(100)
-  .attr("opacity", 0)
-  .on("end", function(){
-    // console.log('hi')
-  });
-  svg.selectAll(".poster_img").remove();
+  // remove old ones
   newplot.exit().remove();
-
-
-
-  svg.select('#centroid').selectAll(".poster_img").data(filtered)
-  .enter()
-  .append("image")
-  .attr("class", 'poster_img')
-  .attr("xlink:href", function(d){
-    if (d.show){
-      return d.url.split(/\'|, |\'/)[1]
-    }
-  })
-  .attr("x", d => Math.cos(y(d.hue_loc)*Math.PI/180)*x(d.dominant_hsl.l)-r(d.watched)/1.5)
-  .attr("y", d => Math.sin(y(d.hue_loc)*Math.PI/180)*x(d.dominant_hsl.l)-r(d.watched))
-  .attr("height", d => 2*r(d.watched))
-  .attr("opacity", 0)
-  .style("visibility", function(d){return d.show ? "visible": 'hidden'});
-
-  svg.select('#centroid').selectAll(".poster_img")
-  .transition()
-  .duration(1000)
-  .attr("opacity", 0.8)
-
-
-
+  // update
   newplot
-  .transition()
-  .ease(d3.easeCubic).duration(1000)
-  .style('stroke-width', function(d){
-    if (d.show){
-      return 1
-    }
-    else{
-      return 0.1
-    }
-  })
-  .style('fill-opacity', function(d){
-    if (d.show){
-      return 0
-    }
-    else{
-      return 0
-    }
-  })
-  .attr('r', function(d){
-    if (d.show){
-      // this.parentNode.appendChild(this);
-      return r(d.watched)
-    }
-    else{
-      return 2;
-    }
-  });
+  .style('stroke-width', d => (d.show) ? 1 : 0.3)
+  .style('fill-opacity', d => (d.show) ? 0.9 : 0.15)
+  .attr('r', d => (d.show) ? 6 : 2);
 
+  var centroid = svg.select('#centroid');
+
+  implement_hover(centroid, filtered, 8);
 };
 
 function filter_yearANDgenre_r(data, svg, year, genre){
