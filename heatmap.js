@@ -62,14 +62,14 @@ function update_timeseries(data, svg){
     .domain(d3.extent(d.data));
 
     var line = d3.line()
-        .curve(d3.curveMonotoneX)
+        .curve(d3.curveBasis)
         .x(function(d,i) { return year_x(Number(i)); })
         .y(function(d) { return y(Number(d)); });
 
     var base = d3.min(d.data);
 
     var area = d3.area()
-    .curve(d3.curveMonotoneX)
+    .curve(d3.curveBasis)
     .x(function(d,i) { return year_x(Number(i)); })
     .y1(function(d) { return y(Number(d)); })
     .y0(function(d) { return y(Number(base)); });
@@ -184,25 +184,25 @@ function plot_timeseries(data, svg){
     y_store.push(y);
 
     var line = d3.line()
-        .curve(d3.curveMonotoneX)
+        .curve(d3.curveBasis)
         .x(function(d,i) { return year_x(Number(i)); })
         .y(function(d) { return y(Number(d)); });
 
     var base = d3.min(d.data);
 
     var line2 = d3.line()
-        .curve(d3.curveMonotoneX)
+        .curve(d3.curveBasis)
         .x(function(d,i) { return year_x(Number(i)); })
         .y(function(d) { return y(Number(base)); });
 
     var area = d3.area()
-    .curve(d3.curveMonotoneX)
+    .curve(d3.curveBasis)
     .x(function(d,i) { return year_x(Number(i)); })
     .y1(function(d) { return y(Number(d)); })
     .y0(function(d) { return y(Number(base)); });
 
     var area2 = d3.area()
-    .curve(d3.curveMonotoneX)
+    .curve(d3.curveBasis)
     .x(function(d,i) { return year_x(Number(i)); })
     .y1(function(d) { return y(Number(base)); })
     .y0(function(d) { return y(Number(base)); });
@@ -280,17 +280,17 @@ function plot_timeseries(data, svg){
         for (var i = 0; i < HUEBIN; i++){
           temp_data.push(pos)
         }
-        d3.selectAll('.hover_circle').remove();
-        temp_data.forEach(function(d,i){
-          var g = d3.select('#hue_axis'+String(i));
-          g.append('circle')
-          .attr('class', 'hover_circle')
-          .attr('cx', year_x(d))
-          .attr('cy', y_store[i](heat_data[i].data[d]))
-          .attr('r', 3)
-          .attr('fill', 'white')
-          .attr("stroke", d3.hsl(i*360/HUEBIN+180/HUEBIN,0.5,0.5));
-        })
+        // d3.selectAll('.hover_circle').remove();
+        // temp_data.forEach(function(d,i){
+        //   var g = d3.select('#hue_axis'+String(i));
+        //   g.append('circle')
+        //   .attr('class', 'hover_circle')
+        //   .attr('cx', year_x(d))
+        //   .attr('cy', y_store[i](heat_data[i].data[d]))
+        //   .attr('r', 3)
+        //   .attr('fill', 'white')
+        //   .attr("stroke", d3.hsl(i*360/HUEBIN+180/HUEBIN,0.5,0.5));
+        // })
         filter_year_r(newdata,svg,1968+Math.floor(mouse_scale(mouse[0])));
     })
 }
