@@ -190,7 +190,7 @@ function radial_scatter(data, svg){
     .attr('cy', d => Math.sin(y(d.hue_loc)*Math.PI/180)*x(d.dominant_hsl.l))
     .attr('r', 3)
     .attr('fill', d => d.show ? d3.hsl(d.dominant_hsl) : 'None')
-    .style('fill-opacity', 0.7)
+    .style('fill-opacity', 0.9)
     .style('stroke-opacity', function(d){
       return 0.0;
     });
