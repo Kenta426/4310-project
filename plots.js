@@ -357,7 +357,6 @@ function filter_hue_r(data, svg, hue){
   })
   .attr('r', function(d){
     if (d.show){
-      // this.parentNode.appendChild(this);
       return r(d.watched)
     }
     else{

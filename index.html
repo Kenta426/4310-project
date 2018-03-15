@@ -1,129 +1,172 @@
 <!DOCTYPE html>
 <html>
-<head>
-</head>
-<link href="https://fonts.googleapis.com/css?family=Hind" rel="stylesheet">
+<title>Colors of Movie Posters</title>
+<head><h1>Hollywood Movies are Blue.</h1></head>
+
+<!-- <link href="https://fonts.googleapis.com/css?family=Hind" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400"> -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<!-- <link rel="stylesheet" href="styles.css"> -->
+
+<!-- imports -->
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script src="https://d3js.org/d3-voronoi.v1.min.js"></script>
-<link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
+
+<!-- our scripts -->
+<script src = "tooltips.js"></script>
+<script src = "plots.js"></script>
+<script src="streamgraph.js"></script>
+<script src="heatmap.js"></script>
+
+<!-- script for renndering the visualization -->
+<script>
+var HUEBIN = 8;
+var ROLL = 90;
+var HROLL = 180;
+// favorite helper function
+function translate(x,y){return "translate(" +x+ "," +y+")";};
+// parse each line
+function parse(line){
+  // get countries
+  var countries = line.country.split(/\[|, |\]/).filter(function(d){return d.length != 0}).map(function(d){
+    var temp = d.replace('\'','');
+    return temp.replace('\'','')
+  });
+  // get genres
+  var genre = line.genre.split(/\[|, |\]/).filter(function(d){return d.length != 0}).map(function(d){
+    var temp = d.replace('\'','');
+    return temp.replace('\'','')
+  });
+  // get d3 hel class
+  var dominant = line.dominant_color.split(/\(|, |\)/).filter(function(d){return d.length != 0}).map(d=>Number(d));
+  var dominant_hsl = d3.hsl(d3.rgb(dominant[0],dominant[1],dominant[2]));
+  // get image url
+  var url = line.file_urls.split(/\[|, |\]/);
+  // rotate the hue by 90
+  var hue_loc = dominant_hsl.h-ROLL;
+  if (hue_loc < 0){
+    hue_loc += 360;
+  }
+  return {
+    // "countries" : countries,
+    "director" : line.director,
+    "like" : Number(line.liked),
+    "watched" : Number(line.watched),
+    "rate" :  Math.floor(Number(line.rating)),
+    "year" : Number(line.year),
+    "title" : line.title,
+    "genre" : genre,
+    "dominant_hsl" : dominant_hsl,
+    "hue" : Math.floor(dominant_hsl.h/(360/HUEBIN)),
+    "url" : url[1],
+    "hue_loc" : hue_loc,
+    "show" : true
+  }
+}
+var srcdata;
+var newdata;
+var svg;
+
+d3.csv("data/movie_poster_data.csv", parse, function(error, data) {
+  if (error) throw error;
+  srcdata = data;
+  newdata = [];
+  // take 100 movies a year
+  var OLDEST = 1968;
+  for (var i = 0; i < 50; i++){
+    var year = srcdata.filter(d => d.year === i+OLDEST);
+    year.slice(0, 100).forEach(function(d){
+      newdata.push(d);
+    });
+  };
+  // sort by year and saturation for better plotting result
+  newdata.sort(
+    function(a,b){
+      if (a.year!=b.year){
+         return (a.dominant_hsl.s-b.dominant_hsl.s);
+      } else {
+         return (a.year>b.year?1:-1);
+      }
+    });
+  // get rid of completely black / white posters
+  newdata = newdata.filter(function(d){
+    return ! isNaN(d.dominant_hsl.h)
+  });
+
+  // insert svg
+  svg = d3.select("#window2")
+  .append('svg')
+  .attr('width', 900)
+  .attr('height', 750);
+  // create a graph
+  plot_timeseries(newdata, svg);
+  radial_scatter(newdata, svg);
+});
+</script>
+
 <body>
-  <!-- dropdown for search or filter -->
-  <div class="dropdown">
-    <button class="dropbtn" onclick="filter_genre_r(newdata,svg, 'all')">All</button>
-    <button class="dropbtn" onclick="filter_genre_r(newdata,svg,'comedy')">Comedy</button>
-    <button class="dropbtn" onclick="filter_genre_r(newdata,svg,'horror')">Horror</button>
-    <button class="dropbtn" onclick="filter_genre_r(newdata,svg,'romance')">Romance</button>
-    <button class="dropbtn" onclick="filter_genre_r(newdata,svg,'animation')">Animation</button>
-    <button class="dropbtn" onclick="filter_genre_r(newdata,svg,'science fiction')">Science Fiction</button>
-    <button class="dropbtn" onclick="filter_genre_r(newdata,svg,'war')">War</button>
-    <button class="dropbtn" onclick="filter_genre_r(newdata,svg,'western')">Western</button>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-3">
+        <h1 class="display-5 font-italic">The Movie Poster Color Wheel</h1>
+        <p>
+          We crawled 5,000 movies from 1968 to 2017 (source) and extracted the dominant color of each movie poster. The colors are then laid out in a color wheel, with angles representing different colors and radius levels of brightness.
+        </p>
+        <!-- label -->
+        <svg id="label" width="161px" height="118px" viewBox="0 0 161 118" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+            <!-- Generator: Sketch 49.1 (51147) - http://www.bohemiancoding.com/sketch -->
+            <desc>Created with Sketch.</desc>
+            <defs></defs>
+            <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                <g id="Desktop-HD-Copy-5" transform="translate(-59.000000, -270.000000)">
+                    <g id="Visual-Analogy" transform="translate(60.000000, 268.000000)">
+                        <g id="Group" transform="translate(0.000000, 17.000000)" stroke="#979797">
+                            <circle id="Oval-5" cx="49.5" cy="49.5" r="20.5"></circle>
+                            <circle id="Oval-5" cx="49.5" cy="49.5" r="35.5"></circle>
+                            <circle id="Oval-5" cx="49.5" cy="49.5" r="49.5"></circle>
+                        </g>
+                        <path d="M98,66 L51,66" id="Line-3" stroke="#979797" fill="#D8D8D8" stroke-linecap="square"></path>
+                        <path id="Line-3-decoration-1" d="M87.2,63 L98,66 L87.2,69" stroke="#979797" fill="#D8D8D8" stroke-linecap="square"></path>
+                        <path id="Line-3-decoration-2" d="M51,66 L61.8,69 L61.8,63 L51,66 Z" stroke="#979797" fill="#D8D8D8" stroke-linecap="square"></path>
+                        <text id="Bright" font-family="AvenirNext-Regular, Avenir Next" font-size="9" font-weight="normal" fill="#000000">
+                            <tspan x="39" y="9">Bright</tspan>
+                        </text>
+                        <text id="Dark" font-family="AvenirNext-Regular, Avenir Next" font-size="9" font-weight="normal" fill="#000000">
+                            <tspan x="98" y="36">Dark</tspan>
+                        </text>
+                        <text id="Color-Segment" font-family="AvenirNext-Regular, Avenir Next" font-size="9" font-weight="normal" fill="#000000">
+                            <tspan x="98" y="110">Color Segment</tspan>
+                        </text>
+                        <path d="M50.5,65.5 L50.5,14.5" id="Line-2" stroke="#979797" stroke-linecap="square" stroke-dasharray="3"></path>
+                        <path d="M99.5,66.5 L99.5,39.5" id="Line-2" stroke="#979797" stroke-linecap="square" stroke-dasharray="3"></path>
+                        <ellipse id="Oval-6" fill="#D8D8D8" cx="70" cy="92.5" rx="7" ry="7.5"></ellipse>
+                        <path d="M101.640288,84.182507 L100.977249,84.8455455 C90.1444407,95.678354 88.8491834,112.799724 97.9289925,125.138952 L101.640288,130.182507" id="Line-4" stroke="#979797" stroke-linecap="square" transform="translate(91.890288, 107.182507) scale(-1, 1) rotate(-41.000000) translate(-91.890288, -107.182507) "></path>
+                        <path id="Line-4-decoration-1" d="M101.640288,130.182507 L97.6556509,119.705739 L92.8230251,123.261822 L101.640288,130.182507 Z" stroke="#979797" stroke-linecap="square"></path>
+                    </g>
+                </g>
+            </g>
+        </svg>
+        <p>
+          Each circle represent the dominant color (hue) and its brightness (luminance) of a movie poster.
+        </p>
+      </div>
+      <div class="col-lg-9">
+        <div id='window2'></div>
+        <!-- dropdown for search or filter -->
+        <div class="dropdown" position="center">
+          <button class="dropbtn" onclick="filter_genre_r(newdata,svg, 'all')">All</button>
+          <button class="dropbtn" onclick="filter_genre_r(newdata,svg,'comedy')">Comedy</button>
+          <button class="dropbtn" onclick="filter_genre_r(newdata,svg,'horror')">Horror</button>
+          <button class="dropbtn" onclick="filter_genre_r(newdata,svg,'romance')">Romance</button>
+          <button class="dropbtn" onclick="filter_genre_r(newdata,svg,'animation')">Animation</button>
+          <button class="dropbtn" onclick="filter_genre_r(newdata,svg,'science fiction')">Science Fiction</button>
+          <button class="dropbtn" onclick="filter_genre_r(newdata,svg,'war')">War</button>
+          <button class="dropbtn" onclick="filter_genre_r(newdata,svg,'western')">Western</button>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <div id = 'window2'></div>
-  <div id = 'window'></div>
-  <div id = 'window3'></div>
-  <script src = "tooltips.js"></script>
-  <script src = "plots.js"></script>
-  <script src="streamgraph.js"></script>
-  <script src="heatmap.js"></script>
-  <script>
-    var HUEBIN = 8;
-    var ROLL = 90;
-    var HROLL = 180;
-    // favorite helper function
-    function translate(x,y){return "translate(" +x+ "," +y+")";};
-    // parse each line
-    function parse(line){
-      // get countries
-      var countries = line.country.split(/\[|, |\]/).filter(function(d){return d.length != 0}).map(function(d){
-        var temp = d.replace('\'','');
-        return temp.replace('\'','')
-      });
-      // get genres
-      var genre = line.genre.split(/\[|, |\]/).filter(function(d){return d.length != 0}).map(function(d){
-        var temp = d.replace('\'','');
-        return temp.replace('\'','')
-      });
-      // get d3 hel class
-      var dominant = line.dominant_color.split(/\(|, |\)/).filter(function(d){return d.length != 0}).map(d=>Number(d));
-      var dominant_hsl = d3.hsl(d3.rgb(dominant[0],dominant[1],dominant[2]));
-      // get image url
-      var url = line.file_urls.split(/\[|, |\]/);
-      // rotate the hue by 90
-      var hue_loc = dominant_hsl.h-ROLL;
-      if (hue_loc < 0){
-        hue_loc += 360;
-      }
-      return {
-        // "countries" : countries,
-        "director" : line.director,
-        "like" : Number(line.liked),
-        "watched" : Number(line.watched),
-        "rate" :  Math.floor(Number(line.rating)),
-        "year" : Number(line.year),
-        "title" : line.title,
-        "genre" : genre,
-        "dominant_hsl" : dominant_hsl,
-        "hue" : Math.floor(dominant_hsl.h/(360/HUEBIN)),
-        "url" : url[1],
-        "hue_loc" : hue_loc,
-        "show" : true
-      }
-    }
-    var srcdata;
-    var newdata;
-    var svg;
-
-    d3.csv("data/movie_poster_data.csv", parse, function(error, data) {
-      if (error) throw error;
-      srcdata = data;
-      newdata = [];
-      // take 100 movies a year
-      var OLDEST = 1968;
-      for (var i = 0; i < 50; i++){
-        var year = srcdata.filter(d => d.year === i+OLDEST);
-        year.slice(0, 100).forEach(function(d){
-          newdata.push(d);
-        });
-      };
-      // sort by year and saturation for better plotting result
-      newdata.sort(
-        function(a,b){
-          if (a.year!=b.year){
-             return (a.dominant_hsl.s-b.dominant_hsl.s);
-          } else {
-             return (a.year>b.year?1:-1);
-          }
-        });
-      // get rid of completely black / white posters
-      newdata = newdata.filter(function(d){
-        return ! isNaN(d.dominant_hsl.h)
-      });
-      // insert svg
-      svg = d3.select("#window2")
-      .append('svg')
-      .attr('width', 1000)
-      .attr('height', 800);
-      // create a graph
-      radial_scatter(newdata, svg);
-      plot_timeseries(newdata, svg);
-
-      // // insert svg for stream graph
-      // svgStream = d3.select("#window")
-      // .append('svg')
-      // .attr('width', 1000)
-      // .attr('height', 300);
-      //
-      // var heat = d3.select("#window3")
-      // .append('svg')
-      // .attr('width', 1000)
-      // .attr('height', 700);
-      // // create a stream graph
-      // plot_streamgraph(newdata, svgStream);
-      // plot_heatmap(newdata, heat);
-
-    });
-  </script>
 </body>
+
 </html>

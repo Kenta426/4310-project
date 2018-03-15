@@ -2,6 +2,40 @@ body {
   font-family: 'Roboto Condensed', sans-serif;
 }
 
+/* Style for Design Analogy */
+#label {
+  /* Oval 5: */
+  border: 1px solid #979797;
+  /* Oval 5: */
+  border: 1px solid #979797;
+  /* Oval 5: */
+  border: 1px solid #979797;
+  /* Line 3: */
+  background: #D8D8D8;
+  border: 1px solid #979797;
+  /* Bright: */
+  font-family: AvenirNext-Regular;
+  font-size: 9px;
+  color: #000000;
+  /* Dark: */
+  font-family: AvenirNext-Regular;
+  font-size: 9px;
+  color: #000000;
+  /* Color Segment: */
+  font-family: AvenirNext-Regular;
+  font-size: 9px;
+  color: #000000;
+  /* Line 2: */
+  border: 1px solid #979797;
+  /* Line 2: */
+  border: 1px solid #979797;
+  /* Oval 6: */
+  background: #D8D8D8;
+  /* Line 4: */
+  transform: rotate(-41deg);
+  border: 1px solid #979797;
+}
+
 /* Dropdown Button */
 .dropbtn {
     background-color: #4CAF50;
