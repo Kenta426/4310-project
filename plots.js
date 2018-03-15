@@ -104,7 +104,7 @@ function radial_scatter(data, svg){
   var temp = data;
   var centroid = svg.append('g')
   .attr('id', 'centroid')
-  .attr('transform', translate(WIDTH/2+PADDING, HEIGHT/2+PADDING));
+  .attr('transform', translate(WIDTH/2+PADDING, HEIGHT/2+1.5*PADDING));
 // implement gradient scale
   var radialGradient = svg.append("defs")
     .append("radialGradient")

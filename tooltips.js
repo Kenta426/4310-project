@@ -7,10 +7,15 @@ var TOOL_PAD = 5;
 
 function showTooltips(loc, data, svg){
   svg.selectAll('.tooltip_movie').remove();
+  var y = d3.scaleLinear()
+  .domain([0,1])
+  .range([0, 360]);
+  var angle = ((data.hue_loc-180) < 0) ? data.hue_loc+180 : data.hue_loc-180;
+
   // console.log(textSize(data.title))
   var text = svg.append('g')
   .attr('class', 'tooltip_movie')
-  .attr('transform', translate(loc[0], loc[1]-50));
+  .attr('transform', translate(loc[0]+110*Math.cos(angle*Math.PI/180), loc[1]+110*Math.sin(angle*Math.PI/180)+TT_HEIGHT/2));
 
   text.append('text')
   .text(data.title)
@@ -152,7 +157,6 @@ function implement_hover(svg, data, r){
             .attr('stroke', 'white')
             .on('mouseover', function(){
               // `// d3.select(this).style("cursor", "pointer");`
-              console.log('h')
               showTooltips(loc, d.data, svg);
             })
             .on('mouseout', function(){
