@@ -212,11 +212,27 @@ function filter_genre_r(data, svg, genre){
   .transition().ease(d3.easePoly).duration(500)
   .style('stroke-width', d => (d.show) ? 1 : 0.3)
   .style('fill-opacity', d => (d.show) ? 0.9 : 0.15)
-  .attr('r', d => (d.show) ? 4.5 : 2);
+  .attr('r', function(d){
+    if (d.show){
+      if (genre == 'all'){
+        return 3;
+      }
+      else{
+        return 4.5;
+      }
+    }
+    else{
+      return 2;
+    }
+  });
 
   var centroid = svg.select('#centroid');
-
-  implement_hover(centroid, filtered, 8);
+  if (genre != 'all'){
+    implement_hover(centroid, filtered, 8);
+  }
+  else{
+    svg.selectAll('.voronoi').remove();
+  }
   update_timeseries(filtered, svg);
 };
 
