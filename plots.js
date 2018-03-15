@@ -29,7 +29,7 @@ function brightness_hist(data, svg){
 
   var g = svg.append('g')
   .attr('class', 'hist_g')
-  .attr('transform', translate(25+TS_WIDTH/2-HIST_WIDTH/2, HEIGHT/2+1.5*PADDING))
+  .attr('transform', translate(25+TS_WIDTH/2-HIST_WIDTH/2, HEIGHT/2+2*PADDING))
 
   var year_x = d3.scaleBand()
     .domain([0,1,2])
@@ -104,7 +104,7 @@ function radial_scatter(data, svg){
   var temp = data;
   var centroid = svg.append('g')
   .attr('id', 'centroid')
-  .attr('transform', translate(WIDTH/2+PADDING, HEIGHT/2+1.5*PADDING));
+  .attr('transform', translate(WIDTH/2+PADDING, HEIGHT/2+1.8*PADDING));
 // implement gradient scale
   var radialGradient = svg.append("defs")
     .append("radialGradient")
@@ -201,6 +201,14 @@ function radial_scatter(data, svg){
     .attr('transform', translate(1.4*WIDTH+50, 1.2*HEIGHT));
     // color_hist(hist, temp);
     // implement_hover(centroid, data, 5);
+  var title_graph =
+  centroid.append('g').attr('transform', translate(0, -HEIGHT/2-1.5*PADDING))
+  .append('text')
+  .attr('class', 'graph_title')
+  .text('ALL MOVIES')
+  .attr('text-anchor', 'middle')
+  .attr('alignment-baseline', 'central')
+  .attr('font-size', '22px')
 }
 
 // filter by genre
@@ -261,7 +269,11 @@ function filter_genre_r(data, svg, genre){
   else{
     svg.selectAll('.voronoi').remove();
   }
+  var caption = (genre == 'all') ? genre.toUpperCase() + " MOVIES" : genre.toUpperCase();
+  svg.select('.graph_title').text(caption)
+
   var svg = d3.select('#window2');
+
   update_timeseries(filtered, svg);
   update_hist(filtered,svg)
 };
