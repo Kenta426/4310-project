@@ -9,6 +9,7 @@
 <script src="https://d3js.org/d3-voronoi.v1.min.js"></script>
 <!-- <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400" rel="stylesheet"> -->
 <!-- <link rel="stylesheet" href="styles.css"> -->
+
 <body style="padding-left: 40px">
 
   <h1 style="padding-left: 15px;padding-top:20px">Some like 'em orange. Others like 'em blue.</h1>
@@ -91,16 +92,16 @@
       <!-- right column -->
       <div class="col-lg-6" style="padding-top:40px">
         <!-- dropdown for search or filter -->
-        <div class="dropdown" style="padding-left:40px">
-          <button class="dropbtn" onclick="filter_genre_r(newdata,svg, 'all')">All</button>
-          <button class="dropbtn" onclick="filter_genre_r(newdata,svg,'action')">Action</button>
-          <button class="dropbtn" onclick="filter_genre_r(newdata,svg,'horror')">Horror</button>
-          <button class="dropbtn" onclick="filter_genre_r(newdata,svg,'romance')">Romance</button>
-          <button class="dropbtn" onclick="filter_genre_r(newdata,svg,'animation')">Animation</button>
-          <button class="dropbtn" onclick="filter_genre_r(newdata,svg,'science fiction')">Science Fiction</button>
-          <button class="dropbtn" onclick="filter_genre_r(newdata,svg,'western')">Western</button>
-
+        <div class="dropdown" style="padding-left:10px">
+          <button type="button" class="btn btn-success" onclick="filter_genre_r(newdata,svg,'all')">All</button>
+          <button type="button" class="btn btn-success" onclick="filter_genre_r(newdata,svg,'action')">Action</button>
+          <button type="button" class="btn btn-success" onclick="filter_genre_r(newdata,svg,'horror')">Horror</button>
+          <button type="button" class="btn btn-success" onclick="filter_genre_r(newdata,svg,'romance')">Romance</button>
+          <button type="button" class="btn btn-success" onclick="filter_genre_r(newdata,svg,'animation')">Animation</button>
+          <button type="button" class="btn btn-success" onclick="filter_genre_r(newdata,svg,'science fiction')">Science Fiction</button>
+          <button type="button" class="btn btn-success" onclick="filter_genre_r(newdata,svg,'western')">Western</button>
         </div>
+
         <div id="window"></div>
 
       </div>
@@ -189,7 +190,7 @@
       svg = d3.select("#window")
       .append('svg')
       .attr('width', 600)
-      .attr('height',750);
+      .attr('height',700);
 
       svg2 = d3.select("#window2")
       .append('svg')
