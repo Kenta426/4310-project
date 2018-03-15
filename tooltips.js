@@ -7,8 +7,6 @@ var TOOL_PAD = 5;
 
 function showTooltips(loc, data, svg){
   svg.selectAll('.tooltip').remove();
-
-
   // console.log(textSize(data.title))
   var text = svg.append('g')
   .attr('class', 'tooltip')
@@ -55,14 +53,12 @@ function showTooltips(loc, data, svg){
 
   text.append('rect')
   .attr('transform', translate(-width/2, -30))
-  // .attr('id', 'frame')
   .attr('x', 0)
   .attr('y', -70)
   .attr('width', width)
   .attr('height', TT_HEIGHT)
   .style('pointer-events', null)
   .attr('opacity', 0.5);
-
 
   text.append('text')
   .attr('class', 'info')
@@ -154,7 +150,4 @@ function implement_hover(svg, data, r){
             .attr('r', 1.2*r);
         }
       })
-      .on("mouseout", function(d){
-
-      });
 }
