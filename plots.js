@@ -29,7 +29,7 @@ function brightness_hist(data, svg){
 
   var g = svg.append('g')
   .attr('class', 'hist_g')
-  .attr('transform', translate(WIDTH+3*PADDING+TS_WIDTH/2-HIST_WIDTH/2, HEIGHT/2+4*PADDING))
+  .attr('transform', translate(25+TS_WIDTH/2-HIST_WIDTH/2, HEIGHT/2+1.5*PADDING))
 
   var year_x = d3.scaleBand()
     .domain([0,1,2])
@@ -88,7 +88,7 @@ function update_hist(data, svg){
   hists.exit().remove();
   hists
   .transition()
-  .duration(1000)
+  .duration(500)
   .attr('width', d=>hist_y(d));
 
   var histicks = g.selectAll('.hist_tick').data(hist);
@@ -96,7 +96,7 @@ function update_hist(data, svg){
   histicks
   .text(function(d){return Math.floor(d/total*100) + '%'})
   .transition()
-  .duration(1000)
+  .duration(500)
   .attr('x', d=>hist_y(d)-10);
 }
 // plot radial scatter plot
@@ -205,8 +205,8 @@ function radial_scatter(data, svg){
 
 // filter by genre
 function filter_genre_r(data, svg, genre){
-  svg.selectAll('#hover').remove();
-  svg.selectAll('.tooltip').remove();
+  svg.selectAll('#hover_c').remove();
+  svg.selectAll('.tooltip_movie').remove();
   svg.selectAll(".poster_img").remove();
   // if there is an image, make them not visible
   svg.selectAll(".poster_img")
@@ -254,35 +254,6 @@ function filter_genre_r(data, svg, genre){
     }
   });
 
-<<<<<<< HEAD
-  newplot
-  .transition()
-  .ease(d3.easeCubic).duration(1000)
-  .style('stroke-width', function(d){
-    if (d.show){
-      return 1
-    }
-    else{
-      return 0.1
-    }
-  })
-  .style('fill-opacity', function(d){
-    if (d.show){
-      return 0.8
-    }
-    else{
-      return 0
-    }
-  })
-  .attr('r', function(d){
-    if (d.show){
-      return r(d.watched)
-    }
-    else{
-      return 2;
-    }
-  });
-=======
   var centroid = svg.select('#centroid');
   if (genre != 'all'){
     implement_hover(centroid, filtered, 8);
@@ -290,9 +261,9 @@ function filter_genre_r(data, svg, genre){
   else{
     svg.selectAll('.voronoi').remove();
   }
+  var svg = d3.select('#window2');
   update_timeseries(filtered, svg);
   update_hist(filtered,svg)
->>>>>>> f7f039bbad353a17b885fb3e9651ee545e7ad87e
 };
 //
 //

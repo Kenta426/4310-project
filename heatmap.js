@@ -1,8 +1,8 @@
 var RECT_HEIGHT = 40;
 var HEAT_WIDTH = 605;
 var PADDING_HEAT = 5;
-var TS_HEIGHT = 35;
-var TS_WIDTH = 250;
+var TS_HEIGHT = 30;
+var TS_WIDTH = 200;
 
 function update_timeseries(data, svg){
   // data {'hue' : [{"year": x, "value": y},{"year": x, "value": y},{"year": x, "value": y}]}
@@ -85,7 +85,7 @@ function update_timeseries(data, svg){
         .y(function(d) { return y(Number(tick)); });
 
     // opacity_scales.domain(d3.extent(d.data));
-    hue_scale.range(["#111111",d3.hsl(i*360/HUEBIN+180/HUEBIN,0.5,0.5)]);
+    hue_scale.range(["#111111",d3.hsl(i*360/HUEBIN+180/HUEBIN,0.8,0.5)]);
     var g = svg.select('#hue_axis'+String(i));
     var path = g.select(".shade").datum(d.data);
 
@@ -243,7 +243,7 @@ function plot_timeseries(data, svg){
     var g = svg.append('g')
     .attr('id', 'hue_axis'+String(i))
     .style('pointer-events', null)
-    .attr('transform', translate(WIDTH+3*PADDING, (i+2) * (PADDING_HEAT+TS_HEIGHT)));
+    .attr('transform', translate(25 , (i+1) * (PADDING_HEAT+TS_HEIGHT)));
 
     g.append("path")
          .datum(d.data)
@@ -296,7 +296,7 @@ function plot_timeseries(data, svg){
       .attr("stroke-linejoin", "round")
       .attr("stroke-linecap", "round")
       .attr("stroke-width", 1.5)
-      .attr("stroke", d3.hsl(i*360/HUEBIN+180/HUEBIN,0.5,0.5))
+      .attr("stroke", d3.hsl(i*360/HUEBIN+180/HUEBIN,0.8,0.5))
       .attr("d", line2)
       .transition()
       .ease(d3.easePoly)
@@ -306,86 +306,8 @@ function plot_timeseries(data, svg){
     var axis = g.append('g')
       .attr('id', 'x-axis')
       .style('pointer-events', null)
-      .attr('transform', translate(0, TS_HEIGHT+7));
+      .attr('transform', translate(25, TS_HEIGHT+7));
 
-<<<<<<< HEAD
-// function plot_heatmap(data, svg){
-//   // data {'hue' : [{"year": x, "value": y},{"year": x, "value": y},{"year": x, "value": y}]}
-//   var temp  = generate_streamgraph(data);
-//   var heat_data = [];
-//   for (var i = 0; i < HUEBIN; i++){
-//     heat_data.push({
-//       'hue': i, 'data': []
-//     })
-//   };
-//   // sort by year
-//   var sorted = temp.sort(function(a,b){
-//     return Number(a.key)-Number(b.key)
-//   })
-//   sorted.forEach(function(d){
-//     var total = d3.sum(d.values, function(i){
-//       return i.value;
-//     });
-//     for (var i = 0; i < HUEBIN; i++){
-//       var found = false;
-//       d.values.forEach(function(kv){
-//         if (i == Number(kv.key)){
-//           found = true;
-//           heat_data[i]['data'].push(kv.value)
-//         }
-//       });
-//       if (!found){
-//         heat_data[i]['data'].push(0)
-//       }
-//     };
-//   });
-//
-//   var year_array = [];
-//   for (var i = 0; i < 50; i ++){
-//     year_array.push(i);
-//   }
-//
-//   var heat_x = d3.scaleBand()
-//     .domain(year_array)
-//     .range([0, HEAT_WIDTH])
-//     .padding(0.15);
-//
-//
-//   var max_arr = heat_data.map(function(d){return d3.max(d.data)});
-//   var min_arr = heat_data.map(function(d){return d3.min(d.data)});
-//
-//
-//   var opacity_scales = d3.scaleLinear()
-//     .domain([d3.min(min_arr),d3.max(max_arr)])
-//     .range([0, 1]);
-//
-//   var hue_scale = d3.scaleLinear()
-//   // .domain([d3.min(min_arr),d3.max(max_arr)])
-//   .domain([d3.min(min_arr),28])
-//   // .range(["#111111",d3.hsl(i*360/HUEBIN+180/HUEBIN,0.5,0.5)]);
-//
-//
-//   heat_data.forEach(function(d, i){
-//     // opacity_scales.domain(d3.extent(d.data));
-//     hue_scale.range(["#111111",d3.hsl(i*360/HUEBIN+180/HUEBIN,0.5,0.5)]);
-//     // .domain(d3.extent(d.data))
-//     // .range(["#111111",d3.hsl(i*360/HUEBIN+180/HUEBIN,0.5,0.5)]);
-//     // console.log(d3.extent(d.data))
-//     var g = svg.append('g')
-//     .attr('transform', translate(33, i * (RECT_HEIGHT+PADDING_HEAT)));
-//     g.selectAll('.heat_cell')
-//     .data(d.data)
-//     .enter()
-//       .append('rect')
-//       .attr('calss', 'heat_cell')
-//       .attr('x', function(d,i){return heat_x(i)})
-//       .attr('width', heat_x.bandwidth())
-//       .attr('height', RECT_HEIGHT)
-//       // .attr('opacity', d => opacity_scales(d))
-//       .attr('fill', function(d){return hue_scale(d)});
-//   })
-// }
-=======
     var years = [1970, 1980, 1990, 2000, 2010];
     axis.selectAll('.tt').data(years)
     .enter()
@@ -408,7 +330,7 @@ function plot_timeseries(data, svg){
   var axis = svg.append('g')
   .attr('id', 'x-axis')
   .style('pointer-events', null)
-  .attr('transform', translate(WIDTH+3*PADDING, (HUEBIN+2) * (PADDING_HEAT+TS_HEIGHT)+PADDING/5));
+  .attr('transform', translate(25, (HUEBIN+1) * (PADDING_HEAT+TS_HEIGHT)+PADDING/5));
 
   var years = [1970, 1980, 1990, 2000, 2010];
 
@@ -443,10 +365,10 @@ function plot_timeseries(data, svg){
 
   var title = svg.append('g')
   .style('pointer-events', null)
-  .attr('transform', translate(WIDTH+3*PADDING, TS_HEIGHT+PADDING/4));
+  .attr('transform', translate(25, TS_HEIGHT/6));
 
   title.append('text')
-  .text('Number of Movies by Hues')
+  .text('Number of Movies by Poster Color')
   .attr('transform', translate(year_x(25),15))
   .attr('text-anchor', 'middle')
   .attr('alignment-baseline', 'central')
@@ -495,4 +417,3 @@ function plot_timeseries(data, svg){
   //       filter_year_r(newdata,svg,1968+Math.floor(mouse_scale(mouse[0])));
   //   })
 }
->>>>>>> f7f039bbad353a17b885fb3e9651ee545e7ad87e

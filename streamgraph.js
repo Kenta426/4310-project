@@ -15,7 +15,7 @@ let plot_streamgraph = function(data, svg) {
   // e.g. [{"year": 1968, 0: 40, 1: 24, 2: 6, 3: 2, 4: 3, 5: 10, 6: 6, 7: 2, 8: 6}]
   let new_array = []; // create JSON
   let m = 50;
-  let td = generate_streamgraph(data)
+  let td = generate_streamgraph(data);
   td.forEach(function(d) {
   	let temp = {};
     for (var i = 0; i < HUEBIN; i++){

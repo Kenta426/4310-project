@@ -6,10 +6,10 @@ var POSTER_WIDTH = 50;
 var TOOL_PAD = 5;
 
 function showTooltips(loc, data, svg){
-  svg.selectAll('.tooltip').remove();
+  svg.selectAll('.tooltip_movie').remove();
   // console.log(textSize(data.title))
   var text = svg.append('g')
-  .attr('class', 'tooltip')
+  .attr('class', 'tooltip_movie')
   .attr('transform', translate(loc[0], loc[1]-50));
 
   text.append('text')
@@ -59,6 +59,18 @@ function showTooltips(loc, data, svg){
   .attr('height', TT_HEIGHT)
   .style('pointer-events', null)
   .attr('opacity', 0.5);
+
+
+  text.append('text')
+  .attr('class', 'info')
+  .attr('transform', translate(0, -TT_HEIGHT/2))
+  .text('Loading ...')
+  .attr('text-anchor', 'middle')
+  .attr('alignment-baseline', 'central')
+  .attr('font-size', '6px')
+  .style('pointer-events', null)
+  .attr('fill', 'white');
+
 
   text.append('text')
   .attr('class', 'info')
@@ -112,7 +124,7 @@ function implement_hover(svg, data, r){
   var voronoi = d3.voronoi()
   .x(d => Math.cos(y(d.hue_loc)*Math.PI/180)*x(d.dominant_hsl.l))
   .y(d => Math.sin(y(d.hue_loc)*Math.PI/180)*x(d.dominant_hsl.l))
-  .extent([[-WIDTH/2-PADDING,-HEIGHT/2-PADDING],[WIDTH/2-PADDING, HEIGHT/2-PADDING]]);
+  .extent([[-WIDTH/2-PADDING,-HEIGHT/2-PADDING],[WIDTH/2-PADDING, HEIGHT/2+PADDING]]);
 
   var voronoiGroup = svg.append("g")
       .attr("class", "voronoi");
@@ -129,9 +141,9 @@ function implement_hover(svg, data, r){
           var loc = [Math.cos(y(d.data.hue_loc)*Math.PI/180)*x(d.data.dominant_hsl.l),
           Math.sin(y(d.data.hue_loc)*Math.PI/180)*x(d.data.dominant_hsl.l)];
           // if (dist(d3.mouse(this), loc) < MAX_DIST){
-            voronoiGroup.selectAll('#hover').remove();
+            voronoiGroup.selectAll('#hover_c').remove();
             voronoiGroup.append('circle')
-            .attr('id', 'hover')
+            .attr('id', 'hover_c')
             .attr('cx', Math.cos(y(d.data.hue_loc)*Math.PI/180)*x(d.data.dominant_hsl.l))
             .attr('cy', Math.sin(y(d.data.hue_loc)*Math.PI/180)*x(d.data.dominant_hsl.l))
             .attr('r', r)
@@ -140,10 +152,11 @@ function implement_hover(svg, data, r){
             .attr('stroke', 'white')
             .on('mouseover', function(){
               // `// d3.select(this).style("cursor", "pointer");`
+              console.log('h')
               showTooltips(loc, d.data, svg);
             })
             .on('mouseout', function(){
-              svg.selectAll('.tooltip').remove();
+              svg.selectAll('.tooltip_movie').remove();
               d3.select('image').remove();
             })
             .transition()
