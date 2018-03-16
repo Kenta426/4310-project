@@ -1,2 +1,2 @@
 # 4310-project
-Follow up to my movie poster project
+[link to the project](https://kenta426.github.io/4310-project/)
